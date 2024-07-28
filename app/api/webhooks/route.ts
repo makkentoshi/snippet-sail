@@ -1,6 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { clerkClient, WebhookEvent, EmailAddress } from "@clerk/nextjs/server";
+import { WebhookEvent, EmailAddress } from "@clerk/nextjs/server";
+
 import User from "@/app/Models/UserSchema";
 import connect from "@/app/lib/connect";
 
@@ -54,6 +55,7 @@ export async function POST(req: Request) {
   // For this guide, you simply log the payload to the console
   const { id } = evt.data;
   const eventType = evt.type;
+
   if (eventType === "user.created") {
     const { id, email_addresses } = evt.data;
 
@@ -63,6 +65,7 @@ export async function POST(req: Request) {
     };
     try {
       await connect();
+      console.log("user creating...");
       await User.create(newUser);
       console.log("user created");
     } catch (error) {
