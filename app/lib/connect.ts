@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 console.log("MONGODB_URI:", process.env.MONGODB_URI);
 
 async function connect(): Promise<void> {
-  console.log("MMONGODB_URI:", process.env.MONGODB_URI);
+  console.log("MONGODB_URI:", process.env.MONGODB_URI);
   const mongoURL = process.env.MONGODB_URI;
 
   if (!mongoURL) {
@@ -13,6 +13,7 @@ async function connect(): Promise<void> {
   }
 
   try {
+    console.log("Attempting to connect to MongoDB...");
     await mongoose.connect(mongoURL);
     console.log("MongoDB is connected...");
   } catch (error) {
