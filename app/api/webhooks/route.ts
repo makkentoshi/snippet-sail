@@ -63,13 +63,14 @@ export async function POST(req: Request) {
       clerkUserId: id,
       emailAddress: email_addresses[0].email_address,
     };
+
     try {
       await connect();
       console.log("user creating...");
       await User.create(newUser);
       console.log("user created");
     } catch (error) {
-      console.error(error);
+      console.error("Error during user creation:", error);
     }
   }
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);

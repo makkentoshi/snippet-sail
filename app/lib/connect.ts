@@ -1,7 +1,7 @@
-console.log("MONGO_URL:", process.env.MONGO_URL);
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
 async function connect(): Promise<void> {
-  console.log("MONGO_URL:", process.env.MONGO_UR);
-  const mongoURL = process.env.MONGO_URL;
+  console.log("MMONGODB_URI:", process.env.MONGODB_URI);
+  const mongoURL = process.env.MONGODB_URI;
 
   if (!mongoURL) {
     throw new Error(
