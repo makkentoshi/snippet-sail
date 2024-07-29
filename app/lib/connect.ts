@@ -1,4 +1,6 @@
+console.log("MONGO_URL:", process.env.MONGO_URL);
 async function connect(): Promise<void> {
+  console.log("MONGO_URL:", process.env.MONGO_UR);
   const mongoURL = process.env.MONGO_URL;
 
   if (!mongoURL) {
@@ -11,13 +13,13 @@ async function connect(): Promise<void> {
     const mongoose = require("mongoose");
 
     mongoose
-      .connect(mongoURL)
+      .connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
       .then(() => console.log("MongoDB is connected..."))
-      .catch((err: Error) =>
-        console.error("Error in connection to MongoDB", err)
-      );
+      .catch((err: Error) => {
+        console.error("Error in connection to MongoDB", err);
+      });
   } catch (error) {
-    console.error(error);
+    console.error("Unexpected error:", error);
   }
 }
 
