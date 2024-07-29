@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
+
 console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 async function connect(): Promise<void> {
   console.log("MMONGODB_URI:", process.env.MONGODB_URI);
   const mongoURL = process.env.MONGODB_URI;
@@ -10,14 +13,8 @@ async function connect(): Promise<void> {
   }
 
   try {
-    const mongoose = require("mongoose");
-
-    mongoose
-      .connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
-      .then(() => console.log("MongoDB is connected..."))
-      .catch((err: Error) => {
-        console.error("Error in connection to MongoDB", err);
-      });
+    await mongoose.connect(mongoURL);
+    console.log("MongoDB is connected...");
   } catch (error) {
     console.error("Unexpected error:", error);
   }
