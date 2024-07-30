@@ -4,6 +4,29 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import connect from "@/app/lib/connect";
 import User from "@/app/Models/UserSchema";
 
+async function getUserEmail(userId: string): Promise<string | null> {
+  const CLERK_API_KEY = process.env.CLERK_API_KEY;
+
+  if (!CLERK_API_KEY) {
+    throw new Error("CLERK_API_KEY is not defined");
+  }
+
+  const response = await fetch(`https://api.clerk.dev/v1/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${CLERK_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    console.error("Failed to fetch user info from Clerk API:", response.statusText);
+    return null;
+  }
+
+  const userData = await response.json();
+  return userData.email_addresses[0]?.email_address || null;
+}
+
 export async function POST(req: Request) {
   console.log("Webhook received");
 
@@ -59,16 +82,24 @@ export async function POST(req: Request) {
       await connect();
       console.log("Looking for user...");
 
-      // Попробуем найти существующего пользователя по ID
       let user = await User.findOne({ clerkUserId: user_id });
 
-      // Если пользователь не найден, создадим нового
       if (!user) {
-        console.log("User not found, creating new user...");
+        console.log("User not found, fetching email from Clerk API...");
+        const emailAddress = await getUserEmail(user_id);
+
+        if (!emailAddress) {
+          console.error("Failed to fetch email address for user");
+          return new Response("Failed to fetch email address for user", {
+            status: 500,
+          });
+        }
+
         user = new User({
           clerkUserId: user_id,
-          emailAddress: "placeholder@example.com", // Замените на актуальный email, если доступен
+          emailAddress: emailAddress,
         });
+
         await user.save();
         console.log("User created");
       } else {
