@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-async function connect(): Promise<void> {
+async function connect() {
   const mongoURL = process.env.MONGODB_URI;
   console.log("MONGODB_URI:", mongoURL);
 

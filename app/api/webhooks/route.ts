@@ -6,7 +6,6 @@ import connect from "@/app/lib/connect";
 import User from "@/app/Models/UserSchema";
 
 export async function POST(req: Request) {
-  await console.log("MEOW");
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
