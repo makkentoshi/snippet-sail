@@ -80,30 +80,33 @@ export async function POST(req: Request) {
     try {
       console.log("Calling connect()...");
       await connect();
-      console.log("Looking for user...");
+      console.log("MongoDB is connected...");
 
+      console.log("Looking for user...");
       let user = await User.findOne({ clerkUserId: user_id });
 
+      const emailAddress = await getUserEmail(user_id);
+
+      if (!emailAddress) {
+        console.error("Failed to fetch email address for user");
+        return new Response("Failed to fetch email address for user", {
+          status: 500,
+        });
+      }
+
       if (!user) {
-        console.log("User not found, fetching email from Clerk API...");
-        const emailAddress = await getUserEmail(user_id);
-
-        if (!emailAddress) {
-          console.error("Failed to fetch email address for user");
-          return new Response("Failed to fetch email address for user", {
-            status: 500,
-          });
-        }
-
+        console.log("User not found, creating new user...");
         user = new User({
           clerkUserId: user_id,
           emailAddress: emailAddress,
         });
-
         await user.save();
         console.log("User created");
       } else {
-        console.log("User already exists");
+        console.log("User already exists, updating email address...");
+        user.emailAddress = emailAddress;
+        await user.save();
+        console.log("User email updated");
       }
     } catch (error) {
       console.error("Error in user handling:", error);
