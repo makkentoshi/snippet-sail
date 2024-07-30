@@ -4,10 +4,9 @@ import { WebhookEvent, EmailAddress } from "@clerk/nextjs/server";
 
 import connect from "@/app/lib/connect";
 import User from "@/app/Models/UserSchema";
-import handleWebhook from "./handleWebhook";
 
 export async function POST(req: Request) {
-  // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
+  await console.log("MEOW");
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -16,35 +15,31 @@ export async function POST(req: Request) {
     );
   }
 
-  // Get the headers
   const headerPayload = headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix-signature");
 
-  // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Error occured -- no svix headers", {
       status: 400,
     });
   }
 
-  // Get the body
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
-  // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
   let evt: WebhookEvent;
 
-  // Verify the payload with the headers
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     }) as WebhookEvent;
+    console.log("Verified event:", evt);
   } catch (err) {
     console.error("Error verifying webhook:", err);
     return new Response("Error occured", {
@@ -52,15 +47,31 @@ export async function POST(req: Request) {
     });
   }
 
-  // Do something with the payload
-  // For this guide, you simply log the payload to the console
   const { id } = evt.data;
   const eventType = evt.type;
 
+  console.log(`Event type: ${eventType}`);
+
   if (eventType === "user.created") {
-    handleWebhook(evt);
+    console.log("user.created event detected");
+    const { id, email_addresses } = evt.data;
+
+    const newUser = {
+      clerkUserId: id,
+      emailAddress: email_addresses[0].email_address,
+    };
+
+    try {
+      console.log("Calling connect()...");
+      await connect();
+      console.log("user creating...");
+      await User.create(newUser);
+      console.log("user created");
+    } catch (error) {
+      console.error(error);
+    }
   }
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  console.log(`Webhook with an ID of ${id} and type of ${eventType}`);
   console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });

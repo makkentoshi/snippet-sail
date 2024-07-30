@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-console.log("MONGODB_URI:", process.env.MONGODB_URI);
+dotenv.config();
 
 async function connect(): Promise<void> {
-  console.log("MONGODB_URI:", process.env.MONGODB_URI);
   const mongoURL = process.env.MONGODB_URI;
+  console.log("MONGODB_URI:", mongoURL);
 
   if (!mongoURL) {
     throw new Error(
