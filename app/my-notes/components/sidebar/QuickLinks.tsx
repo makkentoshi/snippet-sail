@@ -1,9 +1,32 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import BorderAllIcon from "@mui/icons-material/BorderAll";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { useGlobalContext } from "@/ContextApi";
 
 const QuickLinks = () => {
+  const {
+    sideBarMenuObject: { sideBarMenu, setSideBarMenu },
+  } = useGlobalContext();
+
+  function clickedMenu(index: number) {
+    const updatedSideBarMenu = sideBarMenu.map((menu, i) => {
+      if (i === index) {
+        return {
+          ...menu,
+          isSelected: true,
+        };
+      } else {
+        return {
+          ...menu,
+          isSelected: false,
+        };
+      }
+    });
+    setSideBarMenu(updatedSideBarMenu);
+  }
+
   return (
     <div className="mt-20 text-sm">
       <div className="font-bold text-slate-400">Quick Links</div>

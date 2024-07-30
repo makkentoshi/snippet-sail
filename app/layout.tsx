@@ -8,6 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import GlobalContextProvider from "@/ContextApi";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
-        <body className={inter.className}>{children}</body>
+        <GlobalContextProvider>
+          <body className={inter.className}>{children}</body>
+        </GlobalContextProvider>
       </ClerkProvider>
     </html>
   );

@@ -26,7 +26,7 @@ const ContextProvider = createContext<GlobalContextType>({
   },
 });
 
-export default function GlobalContextType({
+export default function GlobalContextProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -34,21 +34,21 @@ export default function GlobalContextType({
   const [sideBarMenu, setSideBarMenu] = useState<SideBarMenu[]>([
     {
       id: 1,
-      name: "Home",
+      name: "All Snippets",
       isSelected: true,
-      icons: <BorderAll />,
+      icons: <BorderAll sx={{ fontSize: 18 }} />,
     },
     {
       id: 2,
-      name: "About",
+      name: "Favorites",
       isSelected: false,
-      icons: <FavoriteBorder />,
+      icons: <FavoriteBorder sx={{ fontSize: 18 }} />,
     },
     {
       id: 3,
-      name: "Contact",
+      name: "Trash",
       isSelected: false,
-      icons: <DeleteOutlineOutlined />,
+      icons: <DeleteOutlineOutlined sx={{ fontSize: 18 }} />,
     },
   ]);
 
