@@ -1,4 +1,3 @@
-import { SessionCreatedEvent } from "svix"; // Import the SessionCreatedEvent type
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     console.error("Missing svix headers");
-    return new Response("Error occured -- no svix headers", {
+    return new Response("Error occurred -- no svix headers", {
       status: 400,
     });
   }
@@ -32,51 +31,57 @@ export async function POST(req: Request) {
 
   const wh = new Webhook(WEBHOOK_SECRET);
 
-  
-  let evt: SessionCreatedEvent; // Update the type of evt to SessionCreatedEvent
-  
+  let evt: WebhookEvent;
+
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
-    }) as SessionCreatedEvent; // Cast the result to SessionCreatedEvent
+    }) as WebhookEvent;
     console.log("Verified event:", evt);
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return new Response("Error occured", {
+    return new Response("Error occurred", {
       status: 400,
     });
   }
-  
-  const { id } = evt.data;
+
   const eventType = evt.type;
-  
   console.log(`Event type: ${eventType}`);
-  
+
   if (eventType === "session.created") {
     console.log("session.created event detected");
-    const { user_id, email_addresses } = evt.data as SessionCreatedEvent; // Cast evt.data to SessionCreatedEvent
-  
-    const newUser = {
-      clerkUserId: user_id,
-      emailAddress: email_addresses[0].email_address,
-    };
-  
+    const { user_id } = evt.data;
+
     try {
       console.log("Calling connect()...");
       await connect();
-      console.log("user creating...");
-      await User.create(newUser);
-      console.log("user created");
+      console.log("Looking for user...");
+
+      // Попробуем найти существующего пользователя по ID
+      let user = await User.findOne({ clerkUserId: user_id });
+
+      // Если пользователь не найден, создадим нового
+      if (!user) {
+        console.log("User not found, creating new user...");
+        user = new User({
+          clerkUserId: user_id,
+          emailAddress: "placeholder@example.com", // Замените на актуальный email, если доступен
+        });
+        await user.save();
+        console.log("User created");
+      } else {
+        console.log("User already exists");
+      }
     } catch (error) {
-      console.error("Error in user creation:", error);
+      console.error("Error in user handling:", error);
     }
   } else {
     console.log(`Event type is not 'session.created', it is: ${eventType}`);
   }
 
-  console.log(`Webhook with an ID of ${id} and type of ${eventType}`);
+  console.log(`Webhook with an ID of ${evt.data.id} and type of ${eventType}`);
   console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });
