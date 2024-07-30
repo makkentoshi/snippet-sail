@@ -1,25 +1,29 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
+
 import connect from "@/app/lib/connect";
 import User from "@/app/Models/UserSchema";
 
 async function getUserEmail(userId: string): Promise<string | null> {
-  const CLERK_API_KEY = process.env.CLERK_API_KEY;
+  const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 
-  if (!CLERK_API_KEY) {
-    throw new Error("CLERK_API_KEY is not defined");
+  if (!CLERK_SECRET_KEY) {
+    throw new Error("CLERK_SECRET_KEY is not defined");
   }
 
   const response = await fetch(`https://api.clerk.dev/v1/users/${userId}`, {
     headers: {
-      Authorization: `Bearer ${CLERK_API_KEY}`,
+      Authorization: `Bearer ${CLERK_SECRET_KEY}`,
       "Content-Type": "application/json",
     },
   });
 
   if (!response.ok) {
-    console.error("Failed to fetch user info from Clerk API:", response.statusText);
+    console.error(
+      "Failed to fetch user info from Clerk API:",
+      response.statusText
+    );
     return null;
   }
 
@@ -34,7 +38,9 @@ export async function POST(req: Request) {
 
   if (!WEBHOOK_SECRET) {
     console.error("WEBHOOK_SECRET is not defined");
-    throw new Error("Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local");
+    throw new Error(
+      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
+    );
   }
 
   const headerPayload = headers();

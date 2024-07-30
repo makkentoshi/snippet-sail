@@ -5,7 +5,6 @@ dotenv.config();
 
 async function connect() {
   const mongoURL = process.env.MONGODB_URI;
-  console.log("MONGODB_URI:", mongoURL);
 
   if (!mongoURL) {
     throw new Error(
