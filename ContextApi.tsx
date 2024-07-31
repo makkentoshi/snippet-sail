@@ -2,9 +2,12 @@
 
 import BorderAll from "@mui/icons-material/BorderAll";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
-import LogoutIcon from "@mui/icons-material/Logout"
+import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
+
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 interface SideBarMenu {
   id: number;
@@ -13,10 +16,20 @@ interface SideBarMenu {
   icons: React.ReactNode;
 }
 
+interface DarkModeType {
+  id: number;
+  icon: React.ReactNode;
+  isSelected: boolean;
+}
+
 interface GlobalContextType {
   sideBarMenuObject: {
     sideBarMenu: SideBarMenu[];
     setSideBarMenu: React.Dispatch<React.SetStateAction<SideBarMenu[]>>;
+  };
+  darkModeObject: {
+    darkMode: DarkModeType[];
+    setDarkMode: React.Dispatch<React.SetStateAction<DarkModeType[]>>;
   };
 }
 
@@ -24,6 +37,10 @@ const ContextProvider = createContext<GlobalContextType>({
   sideBarMenuObject: {
     sideBarMenu: [],
     setSideBarMenu: () => {},
+  },
+  darkModeObject: {
+    darkMode: [],
+    setDarkMode: () => {},
   },
 });
 
@@ -52,13 +69,25 @@ export default function GlobalContextProvider({
       icons: <DeleteOutlineOutlined sx={{ fontSize: 19 }} />,
     },
     {
-        id: 4,
-        name: "Log Out",
-        isSelected: false,
-        icons: <LogoutIcon sx={{ fontSize: 19 }} />,
-      },
+      id: 4,
+      name: "Log Out",
+      isSelected: false,
+      icons: <LogoutIcon sx={{ fontSize: 19 }} />,
+    },
   ]);
 
+  const [darkMode, setDarkMode] = useState<DarkModeType[]>([
+    {
+      id: 1,
+      icon: <LightModeIcon sx={{ fontSize: 18 }}></LightModeIcon>,
+      isSelected: true,
+    },
+    {
+      id: 2,
+      icon: <DarkModeIcon sx={{ fontSize: 18 }}></DarkModeIcon>,
+      isSelected: false,
+    },
+  ]);
   return (
     <ContextProvider.Provider
       value={{
@@ -66,6 +95,7 @@ export default function GlobalContextProvider({
           sideBarMenu,
           setSideBarMenu,
         },
+        darkModeObject: { darkMode, setDarkMode },
       }}
     >
       {children}
