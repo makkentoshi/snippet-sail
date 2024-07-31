@@ -2,6 +2,7 @@
 
 import BorderAll from "@mui/icons-material/BorderAll";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
+import LogoutIcon from "@mui/icons-material/Logout"
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { createContext, useContext, useState } from "react";
 
@@ -36,20 +37,26 @@ export default function GlobalContextProvider({
       id: 1,
       name: "All Snippets",
       isSelected: true,
-      icons: <BorderAll sx={{ fontSize: 18 }} />,
+      icons: <BorderAll sx={{ fontSize: 19 }} />,
     },
     {
       id: 2,
       name: "Favorites",
       isSelected: false,
-      icons: <FavoriteBorder sx={{ fontSize: 18 }} />,
+      icons: <FavoriteBorder sx={{ fontSize: 19 }} />,
     },
     {
       id: 3,
       name: "Trash",
       isSelected: false,
-      icons: <DeleteOutlineOutlined sx={{ fontSize: 18 }} />,
+      icons: <DeleteOutlineOutlined sx={{ fontSize: 19 }} />,
     },
+    {
+        id: 4,
+        name: "Log Out",
+        isSelected: false,
+        icons: <LogoutIcon sx={{ fontSize: 19 }} />,
+      },
   ]);
 
   return (

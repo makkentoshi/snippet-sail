@@ -31,22 +31,18 @@ const QuickLinks = () => {
     <div className="mt-20 text-sm">
       <div className="font-bold text-slate-400">Quick Links</div>
       <ul className="text-slate-400 mt-4 flex flex-col gap-2">
-        <li className="flex gap-1 items-center bg-blue-600 text-white p-[7px] px-2 w-[60%]  py-3 rounded-[7px] cursor-pointer">
-          <BorderAllIcon sx={{ fontSize: 18 }}></BorderAllIcon>
-          <span>All Snippets</span>
-        </li>
-
-        <li className="flex gap-1 items-center text-slate-400 p-[7px] px-2 w-[60%] py-3 cursor-pointer hover:bg-blue-600 hover:text-white transition-all rounded-[7px]">
-          <FavoriteBorderIcon sx={{ fontSize: 18 }}></FavoriteBorderIcon>
-          <span>Favorites</span>
-        </li>
-
-        <li className="flex gap-1 items-center text-slate-400 p-[7px] px-2 w-[60%] py-3 cursor-pointer hover:bg-blue-600 hover:text-white transition-all rounded-[7px]">
-          <DeleteOutlineOutlinedIcon
-            sx={{ fontSize: 18 }}
-          ></DeleteOutlineOutlinedIcon>
-          <span>Trash</span>
-        </li>
+        {sideBarMenu.map((menu, index) => (
+          <li
+            key={index}
+            onClick={() => clickedMenu(index)}
+            className={`flex cursor-pointer select-none gap-1 items-center py-[10px] border-[7px] border-blue-600   hover:text-slate-400  rounded-[6px] transition-all text-[15px] sm:text-sm ${
+              menu.isSelected ? "bg-blue-600 text-white" : "text-slate-500 border-white"
+            }`}
+          >
+            {menu.icons}
+            <span>{menu.name}</span>
+          </li>
+        ))}
       </ul>
     </div>
   );
