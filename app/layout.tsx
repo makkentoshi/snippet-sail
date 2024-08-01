@@ -9,6 +9,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import GlobalContextProvider from "@/ContextApi";
+import { ThemeProvider } from "@/components/components/context/ThemeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
-        <GlobalContextProvider>
-          <body className={inter.className}>{children}</body>
-        </GlobalContextProvider>
+        <ThemeProvider>
+          <GlobalContextProvider>
+            <body className={inter.className}>{children}</body>
+          </GlobalContextProvider>
+        </ThemeProvider>
       </ClerkProvider>
     </html>
   );

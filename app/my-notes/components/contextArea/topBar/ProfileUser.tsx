@@ -2,6 +2,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Loader } from "lucide-react";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProfileUser = () => {
   const { user } = useUser();
@@ -13,16 +14,20 @@ const ProfileUser = () => {
     </div>
   );
 
+  const skeleton = <Skeleton className="w-[100px] h-[20px] rounded-full" />;
+
   return (
     <div className="flex gap-3 items-center">
-      {!user ? (loading) : (
-      <Image
-        src={imageUrl}
-        alt={`${user?.firstName} ${user?.lastName}}`}
-        className="w-9 h-9 rounded-full mb-[5px]"
-        width={36}
-        height={36}
-      />
+      {!user ? (
+        skeleton
+      ) : (
+        <Image
+          src={imageUrl}
+          alt={`${user?.firstName} ${user?.lastName}}`}
+          className="w-9 h-9 rounded-full mb-[5px]"
+          width={36}
+          height={36}
+        />
       )}
       <div className="flex flex-col text-sm">
         <span className="font-semibold">

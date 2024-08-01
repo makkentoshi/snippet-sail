@@ -2,3 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+  }
+  
+  [data-theme='dark'] {
+    --background-color: #000000;
+    --text-color: #ffffff;
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .themeToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    transition: transform 0.3s;
+  }
+  
+  .themeToggle:hover {
+    transform: scale(1.1);
+  }
+  
+  .icon {
+    font-size: 24px;
+    color: var(--text-color);
+    transition: color 0.3s;
+  }

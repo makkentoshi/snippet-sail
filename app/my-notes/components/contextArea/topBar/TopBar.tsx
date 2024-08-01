@@ -1,14 +1,14 @@
 import React from "react";
 import ProfileUser from "./ProfileUser";
 import SearchBar from "./SearchBar";
-import DarkMode from "@mui/icons-material/DarkMode";
+import ThemeToggle from "@/components/components/ThemeToggle";
 
 const TopBar = () => {
   return (
     <div className="rounded-lg flex justify-between items-center bg-white p-3">
       <ProfileUser></ProfileUser>
       <SearchBar></SearchBar>
-      <DarkMode></DarkMode>
+      <ThemeToggle></ThemeToggle>
     </div>
   );
 };
