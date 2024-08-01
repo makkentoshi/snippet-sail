@@ -15,7 +15,7 @@ const ThemeToggle = () => {
     >
       <FontAwesomeIcon
         icon={theme === 'light' ? faMoon : faSun}
-        className={classNames('transition-transform duration-300', {
+        className={classNames('icon-transition', {
           'text-yellow-500': theme === 'light',
           'text-gray-800': theme === 'dark',
         })}

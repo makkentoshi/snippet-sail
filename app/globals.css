@@ -38,3 +38,15 @@
     color: var(--text-color);
     transition: color 0.3s;
   }
+
+  .icon-transition {
+    transition: transform 0.3s, color 0.3s;
+  }
+  
+  .icon-transition-enter {
+    transform: rotate(0deg);
+  }
+  
+  .icon-transition-exit {
+    transform: rotate(180deg);
+  }
