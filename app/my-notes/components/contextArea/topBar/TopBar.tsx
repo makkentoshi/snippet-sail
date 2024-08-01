@@ -5,7 +5,7 @@ import DarkMode from "@mui/icons-material/DarkMode";
 
 const TopBar = () => {
   return (
-    <div className="rounded-lg flex justify-between items-center bg-white p-3 gap-2">
+    <div className="rounded-lg flex justify-between items-center bg-white p-3">
       <ProfileUser></ProfileUser>
       <SearchBar></SearchBar>
       <DarkMode></DarkMode>

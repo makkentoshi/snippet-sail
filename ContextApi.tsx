@@ -6,7 +6,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import React, { createContext, useContext, useState } from "react";
 
-import LightModeIcon from "@mui/icons-material/LightMode";
+import LightMode from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 interface SideBarMenu {
@@ -79,8 +79,10 @@ export default function GlobalContextProvider({
   const [darkMode, setDarkMode] = useState<DarkModeType[]>([
     {
       id: 1,
-      icon: <LightModeIcon sx={{ fontSize: 18 }}></LightModeIcon>,
-      isSelected: true,
+      icon: (
+        <LightMode sx={{ fontSize: 18 }} className="text-black"></LightMode>
+      ),
+      isSelected: false,
     },
     {
       id: 2,
