@@ -11,13 +11,13 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full transition-colors duration-300 focus:outline-none"
+      className="p-2 rounded-full  duration-300 focus:outline-none transition-all px-3"
     >
       <FontAwesomeIcon
         icon={theme === 'light' ? faMoon : faSun}
         className={classNames('icon-transition', {
-          'text-yellow-500': theme === 'light',
-          'text-gray-800': theme === 'dark',
+          'text-gray-900': theme === 'light',
+          'text-yellow-500': theme === 'dark',
         })}
       />
     </button>
