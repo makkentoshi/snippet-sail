@@ -11,9 +11,9 @@ const Sidebar = () => {
   return (
     <div
       className={classNames(
-        "lg:w-[20%] p-5 flex flex-col gap-2 h-screen pt-7 border-r sm:w-[50%]",
+        " p-5 flex flex-col gap-2 h-screen pt-7 border-r w-[100%] sm:w-[20%] lg:w-[30%] ",
         {
-          "bg-slate-900 text-white": theme === "dark",
+          "bg-slate-900 text-white border-slate-800": theme === "dark",
           "bg-white text-slate-500": theme === "light",
         }
       )}

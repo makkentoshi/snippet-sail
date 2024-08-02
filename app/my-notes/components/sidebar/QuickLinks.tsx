@@ -37,7 +37,7 @@ const QuickLinks = () => {
             className={classNames(
               "flex cursor-pointer select-none px-2 gap-1 items-center py-[10px] border-[0.2px] rounded-[4px] transition-all text-[15px] sm:text-sm",
               {
-                "bg-blue-600  border-blue-950": menu.isSelected,
+                "bg-slate-100": menu.isSelected,
                 "hover:text-slate-400 text-slate-500 border-white":
                   !menu.isSelected && currentTheme === "light",
                 "hover:text-slate-400 text-slate-400 border-slate-900":
