@@ -3,7 +3,7 @@ import DataObjectIcon from "@mui/icons-material/DataObject";
 
 const Logo = () => {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center ">
       <div className="bg-blue-600 p-[6px] rounded-[10px]">
         <DataObjectIcon sx={{ fontSize: 27, color: "white" }}></DataObjectIcon>
       </div>

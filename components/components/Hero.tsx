@@ -12,7 +12,7 @@ const Hero = () => {
         snippet you need, right when you need it. Spend less time searching for
         code and more time writing it.
       </p>
-      <Button className="block px-9 py-3 text-sm font-medium text-white transition-all focus:outline-none">
+      <Button className="block px-9 py-2 text-sm font-medium text-black transition-all focus:outline-none border rounded-xl ">
         {"Let's get started!"}
       </Button>
     </div>

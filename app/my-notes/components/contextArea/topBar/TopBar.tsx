@@ -10,14 +10,18 @@ const TopBar = () => {
   const { theme } = useTheme();
   return (
     <div
-      className={classNames("rounded-lg flex justify-between items-cente p-3 border-b", {
-        "bg-slate-800 text-white border-slate-800": theme === "dark",
-        "bg-white text-slate-500": theme === "light",
-      })}
+      className={classNames(
+        "rounded-[20px] flex justify-between items-center p-3 border-b relative",
+        {
+          "bg-slate-800 text-white border-slate-800": theme === "dark",
+          "bg-white text-slate-500": theme === "light",
+        }
+      )}
     >
       <ProfileUser></ProfileUser>
-      <SearchBar></SearchBar>
-      <ThemeToggle></ThemeToggle>
+      <div className="flex gap-4 items-center">
+        <ThemeToggle></ThemeToggle>
+      </div>
     </div>
   );
 };

@@ -2,15 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --background-color: #ffffff;
-    --text-color: #000000;
-  }
   
 
   
   body {
-    background-color: var(--background-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
   }

@@ -1,11 +1,9 @@
-
 const AddSnippetButton = () => {
   return (
-    <div className="absolute flex gap-2 px-4 py-[10px] rounded-3xl bg-blue-600  text-[13px] text-white top-[0px] right-[0px] items-center cursor-pointer select-none">
-        <div className="font-bold">+</div>
-        <div>Snippet</div>
+    <div className="flex text-sm absolute right-0 bg-blue-700 text-white h-full items-center justify-center rounded-[20px] px-4 cursor-pointer">
+      <span className="font-bold ">+</span>
     </div>
-  )
-}
+  );
+};
 
-export default AddSnippetButton
+export default AddSnippetButton;
