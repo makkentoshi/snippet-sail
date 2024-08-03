@@ -1,14 +1,16 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import TopBar from "./components/TopBar";
 import Sidebar from "./components/Sidebar";
-import SearchBar from "./components/Searchbar";
 
 const page = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <div className="flex-1 flex flex-col">
-        <TopBar />
+        <TopBar collapsed={collapsed} setCollapsed={setCollapsed} />
         {/* Your main content goes here */}
         <div className="flex-1 p-4">
           {/* Example content */}

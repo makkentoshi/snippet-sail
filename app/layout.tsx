@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import {
   ClerkProvider,
@@ -11,7 +11,11 @@ import {
 import GlobalContextProvider from "@/ContextApi";
 import { ThemeProvider } from "@/components/context/ThemeContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -28,7 +32,7 @@ export default function RootLayout({
       <ClerkProvider>
         <ThemeProvider>
           <GlobalContextProvider>
-            <body className={inter.className}>{children}</body>
+            <body className={montserrat.className}>{children}</body>
           </GlobalContextProvider>
         </ThemeProvider>
       </ClerkProvider>
