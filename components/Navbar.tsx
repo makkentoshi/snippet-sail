@@ -1,6 +1,6 @@
 "use client";
 import DataObjectIcon from "@mui/icons-material/DataObject";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import { useAuth } from "@clerk/nextjs";
 import Buttons from "./Buttons";
 const Navbar = () => {

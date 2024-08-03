@@ -9,7 +9,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import GlobalContextProvider from "@/ContextApi";
-import { ThemeProvider } from "@/components/components/context/ThemeContext";
+import { ThemeProvider } from "@/components/context/ThemeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 

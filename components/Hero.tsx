@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 
 const Hero = () => {
   return (
@@ -12,7 +12,7 @@ const Hero = () => {
         snippet you need, right when you need it. Spend less time searching for
         code and more time writing it.
       </p>
-      <Button className="block px-9 py-2 text-sm font-medium text-black transition-all focus:outline-none border rounded-xl ">
+      <Button className="block px-9 py-2 text-sm font-medium text-black transition-all focus:outline-none border rounded-xl hover:bg-slate-50 ">
         {"Let's get started!"}
       </Button>
     </div>

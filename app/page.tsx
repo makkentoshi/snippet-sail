@@ -1,7 +1,7 @@
-import Hero from "@/components/components/Hero";
-import Navbar from "@/components/components/Navbar";
+import Hero from "@/components/Hero";
+import Navbar from "@/components/Navbar";
 import Image from "next/image";
-import { ThemeProvider } from "@/components/components/context/ThemeContext";
+import { ThemeProvider } from "@/components/context/ThemeContext";
 
 export default function Home() {
   return (
