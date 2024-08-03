@@ -25,7 +25,8 @@ const TopBar = ({ collapsed, setCollapsed }: { collapsed: boolean, setCollapsed:
   }, []);
 
   return (
-    <div className="flex items-center justify-between bg-gray-100 p-4 relative">
+    <div className="flex items-center justify-between bg-gray-100 p-4 relative"
+    >
       {!isMobile && (
         <Button
           type="text"

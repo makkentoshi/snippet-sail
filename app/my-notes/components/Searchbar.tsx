@@ -24,7 +24,7 @@ const SearchBar = () => {
       />
       <Button
         onClick={handleSearch}
-        className="bg-blue-800 text-white rounded-[40px] p-2 flex justify-center items-center hover:bg-blue-700 transition-all "
+        className="bg-blue-500 text-white rounded-[40px] p-2 flex justify-center items-center hover:bg-blue-700 transition-all "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
