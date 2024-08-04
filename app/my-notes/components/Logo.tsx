@@ -5,14 +5,14 @@ type LogoProps = {
 };
 
 const Logo = ({ collapsed }: LogoProps) => {
-  return  (
+  return (
     <div className="flex items-center justify-center p-10  transition-all">
       <div className="flex items-center justify-center text-[1.5rem] rounded-[50%] pr-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={1.2}
+          strokeWidth={1.05}
           stroke="currentColor"
           className="size-8"
         >
@@ -23,10 +23,10 @@ const Logo = ({ collapsed }: LogoProps) => {
           />
         </svg>
         {!collapsed && (
-          <>
-            <span className="font-semibold">Snippet</span>
-            <span className="text-blue-800">Sail</span>
-          </>
+          <div className="flex gap-1 text-[19px] pr-5">
+            <span className={`font-bold text-[#31267a]`}>Snippet</span>
+            <span className="text-slate-600">Sail</span>
+          </div>
         )}
       </div>
     </div>

@@ -1,10 +1,17 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { Button } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
-import SearchBar from './Searchbar';
+"use client";
+import React, { useState, useEffect } from "react";
+import { Button } from "antd";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import SearchBar from "./Searchbar";
+import UserProfile from "./UserProfile";
 
-const TopBar = ({ collapsed, setCollapsed }: { collapsed: boolean, setCollapsed: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const TopBar = ({
+  collapsed,
+  setCollapsed,
+}: {
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -16,27 +23,21 @@ const TopBar = ({ collapsed, setCollapsed }: { collapsed: boolean, setCollapsed:
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    // Add event listener
+    window.addEventListener("resize", handleResize);
 
-  
+    // Call handler right away so state gets updated with initial window size
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div className="flex items-center justify-between bg-gray-100 p-4 relative"
-    >
-      {!isMobile && (
-        <Button
-          type="text"
-          className="absolute left-5 top-9 bg-white"
-          onClick={() => setCollapsed(!collapsed)}
-          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        />
-      )}
+    <div className="flex items-center justify-between bg-gray-100 p-4 relative">
+      {!isMobile && <></>}
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-1/2">
+        <div className="w-[70%]">
           <SearchBar />
         </div>
       </div>
