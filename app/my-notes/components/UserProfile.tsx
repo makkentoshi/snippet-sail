@@ -1,17 +1,13 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 const UserProfile = () => {
   const { user } = useUser();
   const imageUrl = user?.imageUrl;
   return (
     <div className="flex gap-3 items-center">
-      <img
-        src={imageUrl}
-        alt={`${user?.firstName} ${user?.lastName}`}
-        className="w-9 h-9 rounded-full"
-      ></img>
+      <UserButton></UserButton>
       <div className="flex flex-col text-sm">
         <span className="font-semibold">
           {user?.lastName} {user?.firstName}
