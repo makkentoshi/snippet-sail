@@ -14,7 +14,6 @@ function AllNotesSection() {
       <SingleNote></SingleNote>
       <SingleNote></SingleNote>
       <SingleNote></SingleNote>
-      <SingleNote></SingleNote>
     </div>
   );
 }
@@ -23,7 +22,7 @@ export default AllNotesSection;
 
 function SingleNote() {
   return (
-    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
+    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[380px] py-4 bg-white shadow-md">
       <NoteHeader></NoteHeader>
       <NoteDate></NoteDate>
       <NoteTags></NoteTags>
