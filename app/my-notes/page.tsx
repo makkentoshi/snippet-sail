@@ -1,10 +1,10 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import TopBar from "./components/TopBar";
 import Sidebar from "./components/Sidebar";
 import ContextArea from "./components/ContextArea";
 
-const page = () => {
+const Page = () => {
   const [collapsed, setCollapsed] = useState(window.innerWidth <= 768);
 
   return (
@@ -20,4 +20,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -15,7 +15,6 @@ function AllNotesSection() {
       <SingleNote></SingleNote>
       <SingleNote></SingleNote>
       <SingleNote></SingleNote>
-      
     </div>
   );
 }
@@ -56,16 +55,10 @@ function NoteDate() {
 
 function NoteTags() {
   return (
-    <div className="text-slate-500 text-[11px] mx-4 flex-wrap flex gap-1 mt-4">
-      <span className="bg-blue-100 text-[#31267a] p-1 rounded-[10px] px-2">
-        functions
-      </span>
-      <span className="bg-blue-100 text-[#31267a] p-1 rounded-[10px] px-2">
-        functions
-      </span>
-      <span className="bg-blue-100 text-[#31267a] p-1 rounded-[10px] px-2">
-        functions
-      </span>
+    <div className=" text-white text-[11px] mx-4 flex-wrap flex gap-1 mt-4  ">
+      <span className="bg-[#31267a]  p-1 rounded-[7px] px-2">functions</span>
+      <span className="bg-[#31267a] p-1 rounded-[7px] px-2">functions</span>
+      <span className="bg-[#31267a]  p-1 rounded-[7px] px-2">functions</span>
     </div>
   );
 }
@@ -80,8 +73,18 @@ function NoteDescription() {
 }
 
 const Code: React.FC<CodeBlockProps> = ({ language }) => {
-  const codeString =
-    "import React from 'react'; function HelloWorld() {\n  return <h1>Hello World!</h1>;\n}";
+  const codeString = `function SingleNote() {
+    return (
+      <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
+        <NoteHeader></NoteHeader>
+        <NoteDate></NoteDate>
+        <NoteTags></NoteTags>
+        <NoteDescription></NoteDescription>
+        <Code language="javascript"></Code>
+        <NoteFooter></NoteFooter>
+      </div>
+    );
+  }`;
 
   return (
     <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
