@@ -11,7 +11,7 @@ import {
   PythonOutlined,
   Html5Outlined,
   JavaOutlined,
-  AlignLeftOutlined
+  AlignLeftOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { TableCellsIcon } from "@heroicons/react/24/solid";
@@ -20,8 +20,9 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
 const MenuList = () => {
   return (
     <Menu
-      className="h-[88vh] mt-[2rem] flex flex-col gap-[15px] text-[1rem]  "
+      className="h-[88vh] mt-[2rem] flex flex-col gap-[15px] text-[1rem]   "
       mode="inline"
+      style={{ width: 256 }}
     >
       <Menu.Item key="home" icon={<HomeOutlined />}>
         Home
@@ -29,7 +30,7 @@ const MenuList = () => {
       <Menu.Item key="chat" icon={<AppstoreOutlined />}>
         Chat
       </Menu.Item>
-      <Menu.SubMenu key="subsnippets" icon={<BarsOutlined />} title="Snippets">
+      <Menu.SubMenu key="subsnippets" icon={<BarsOutlined />} title="Filter">
         <Menu.Item key="all" icon={<AlignLeftOutlined />}>
           <span className="">All Snippets</span>
         </Menu.Item>

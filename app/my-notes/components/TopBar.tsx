@@ -37,7 +37,7 @@ const TopBar = ({
     <div className="flex items-center justify-between bg-gray-100 p-4 relative">
       {!isMobile && <></>}
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-[70%]">
+        <div className="w-[80%]">
           <SearchBar />
         </div>
       </div>

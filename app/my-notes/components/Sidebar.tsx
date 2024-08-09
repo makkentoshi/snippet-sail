@@ -31,8 +31,9 @@ const Sidebar = ({
 
   return (
     <div className="">
+      <Logo collapsed={collapsed} />
+
       <Sider collapsed={collapsed} collapsible trigger={null}>
-        <Logo collapsed={collapsed} />
         <MenuList />
       </Sider>
     </div>

@@ -3,28 +3,42 @@ import { ThumbsUp } from "lucide-react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import JavascriptIcon from "@mui/icons-material/Javascript";
 import SyntaxHighlighter from "react-syntax-highlighter";
+import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useGlobalContext } from "@/ContextApi";
+import { SingleNoteType } from "@/app/Types";
 
 interface CodeBlockProps {
   language: string;
 }
 
 function AllNotesSection() {
+  const {
+    allNotesObject: { allNotes },
+  } = useGlobalContext();
   return (
-    <div className="mt-5 flex flex-wrap gap-4">
-      <SingleNote></SingleNote>
-      <SingleNote></SingleNote>
-      <SingleNote></SingleNote>
+    <div className="mt-5 flex flex-wrap gap-4 ">
+      {allNotes.map((note, index) => (
+        <div key={index}>
+          <SingleNote note={note}></SingleNote>
+        </div>
+      ))}
     </div>
   );
 }
 
 export default AllNotesSection;
 
-function SingleNote() {
+function SingleNote({ note }: { note: SingleNoteType }) {
+  const {
+    openContentNoteObject: { openContentNote },
+  } = useGlobalContext();
+  const { title, creationDate } = note;
+
   return (
-    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[380px] py-4 bg-white shadow-md">
-      <NoteHeader></NoteHeader>
-      <NoteDate></NoteDate>
+    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md">
+      <NoteHeader title={title}></NoteHeader>
+      <NoteDate creationDate={creationDate}></NoteDate>
       <NoteTags></NoteTags>
       <NoteDescription></NoteDescription>
       <Code language="javascript"></Code>
@@ -33,31 +47,40 @@ function SingleNote() {
   );
 }
 
-function NoteHeader() {
+function NoteHeader({ title }: { title: string }) {
+  const {
+    openContentNoteObject: { setOpenContentNote },
+  } = useGlobalContext();
+
   return (
     <div className="flex justify-between mx-4">
-      <span className="font-bold text-lg w-[87%]">
-        Lorem ipsum dolor sit amet.
+      <span
+        className="font-bold text-lg w-[87%]"
+        onClick={() => setOpenContentNote(true)}
+      >
+        {title}
       </span>
       <ThumbsUp className="text-slate-400 cursor-pointer"></ThumbsUp>
     </div>
   );
 }
 
-function NoteDate() {
+function NoteDate({ creationDate }: { creationDate: string }) {
   return (
     <div className="text-slate-500 text-[11px] flex gap-1 font-light mx-4 mt-1">
-      <span className="">Created on 12th June</span>
+      <span className="">{creationDate}</span>
     </div>
   );
 }
 
-function NoteTags() {
+function NoteTags({ tags }: { tags: string[] }) {
   return (
     <div className=" text-white text-[11px] mx-4 flex-wrap flex gap-1 mt-4  ">
-      <span className="bg-[#31267a]  p-1 rounded-[7px] px-2">functions</span>
-      <span className="bg-[#31267a] p-1 rounded-[7px] px-2">functions</span>
-      <span className="bg-[#31267a]  p-1 rounded-[7px] px-2">functions</span>
+      {tags.map((tag, index) => (
+        <span key={index} className="bg-[#31267a]  p-1 rounded-[7px] px-2">
+          {tag}
+        </span>
+      ))}
     </div>
   );
 }

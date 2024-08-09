@@ -4,10 +4,11 @@ import BorderAll from "@mui/icons-material/BorderAll";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import LightMode from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { SingleNoteType } from "./app/Types";
 
 interface SideBarMenu {
   id: number;
@@ -39,6 +40,16 @@ interface GlobalContextType {
     openContentNote: boolean;
     setOpenContentNote: React.Dispatch<React.SetStateAction<boolean>>;
   };
+
+  isMobileObject: {
+    isMobile: boolean;
+    setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+
+  allNotesObject: {
+    allNotes: SingleNoteType[];
+    setAllNotes: React.Dispatch<React.SetStateAction<SingleNoteType[]>>;
+  };
 }
 
 const ContextProvider = createContext<GlobalContextType>({
@@ -57,6 +68,14 @@ const ContextProvider = createContext<GlobalContextType>({
   openContentNoteObject: {
     openContentNote: false,
     setOpenContentNote: () => {},
+  },
+  isMobileObject: {
+    isMobile: false,
+    setIsMobile: () => {},
+  },
+  allNotesObject: {
+    allNotes: [],
+    setAllNotes: () => {},
   },
 });
 
@@ -109,6 +128,97 @@ export default function GlobalContextProvider({
 
   const [openSideBar, setOpenSideBar] = useState(false);
   const [openContentNote, setOpenContentNote] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [allNotes, setAllNotes] = useState<SingleNoteType[]>([]);
+
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  useEffect(() => {
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    function updateAllNotes() {
+      const allNotes = [
+        {
+          id: "1",
+          title: "This is a note",
+          isFavorite: false,
+          tags: ["tag1", "tag2"],
+          description: "This is a note 1",
+          code: `function SingleNote() {
+            return (
+              <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
+                <NoteHeader></NoteHeader>
+                <NoteDate></NoteDate>
+                <NoteTags></NoteTags>
+                <NoteDescription></NoteDescription>
+                <Code language="javascript"></Code>
+                <NoteFooter></NoteFooter>
+              </div>
+            );
+          }`,
+          language: "javascript",
+          creationDate: "2022-02-01",
+        },
+        {
+          id: "2",
+          title: "This is a note",
+          isFavorite: false,
+          tags: ["tag1", "tag2"],
+          description: "This is a note 2",
+          code: `function SingleNote() {
+            return (
+              <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
+                <NoteHeader></NoteHeader>
+                <NoteDate></NoteDate>
+                <NoteTags></NoteTags>
+                <NoteDescription></NoteDescription>
+                <Code language="javascript"></Code>
+                <NoteFooter></NoteFooter>
+              </div>
+            );
+          }`,
+          language: "javascript",
+          creationDate: "2022-02-01",
+        },
+        {
+          id: "3",
+          title: "This is a note 3",
+          isFavorite: false,
+          tags: ["tag1", "tag2"],
+          description: "This is a note",
+          code: `function SingleNote() {
+            return (
+              <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
+                <NoteHeader></NoteHeader>
+                <NoteDate></NoteDate>
+                <NoteTags></NoteTags>
+                <NoteDescription></NoteDescription>
+                <Code language="javascript"></Code>
+                <NoteFooter></NoteFooter>
+              </div>
+            );
+          }`,
+          language: "javascript",
+          creationDate: "2022-02-01",
+        },
+      ];
+
+      setTimeout(() => {
+        setAllNotes(allNotes);
+      }, 1200);
+    }
+    updateAllNotes();
+  }, []);
 
   return (
     <ContextProvider.Provider
@@ -120,6 +230,8 @@ export default function GlobalContextProvider({
         darkModeObject: { darkMode, setDarkMode },
         openSideBarObject: { openSideBar, setOpenSideBar },
         openContentNoteObject: { openContentNote, setOpenContentNote },
+        isMobileObject: { isMobile, setIsMobile },
+        allNotesObject: { allNotes, setAllNotes },
       }}
     >
       {children}

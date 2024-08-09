@@ -24,7 +24,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex w-full sm:w-[90%] bg-white rounded-[15px] justify-between h-[70px] items-center px-1">
+    <div className="flex w-full sm:w-[95%] bg-white rounded-[15px] justify-between h-[70px] items-center px-1">
       <div className="flex p-2">
         {isMobile ? <UserButton /> : <UserProfile />}
       </div>
