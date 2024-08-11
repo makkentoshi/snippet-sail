@@ -1,5 +1,5 @@
 export interface SingleNoteType {
-  id: string;
+  _id: string;
   title: string;
   isFavorite: boolean;
   tags: string[];

@@ -50,6 +50,13 @@ interface GlobalContextType {
     allNotes: SingleNoteType[];
     setAllNotes: React.Dispatch<React.SetStateAction<SingleNoteType[]>>;
   };
+
+  selectedNoteObject: {
+    selectedNote: SingleNoteType | null;
+    setSelectedNote: React.Dispatch<
+      React.SetStateAction<SingleNoteType | null>
+    >;
+  };
 }
 
 const ContextProvider = createContext<GlobalContextType>({
@@ -76,6 +83,10 @@ const ContextProvider = createContext<GlobalContextType>({
   allNotesObject: {
     allNotes: [],
     setAllNotes: () => {},
+  },
+  selectedNoteObject: {
+    selectedNote: null,
+    setSelectedNote: () => {},
   },
 });
 
@@ -130,6 +141,7 @@ export default function GlobalContextProvider({
   const [openContentNote, setOpenContentNote] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [allNotes, setAllNotes] = useState<SingleNoteType[]>([]);
+  const [selectedNote, setSelectedNote] = useState<SingleNoteType | null>(null);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -149,7 +161,7 @@ export default function GlobalContextProvider({
     function updateAllNotes() {
       const allNotes = [
         {
-          id: "1",
+          _id: "1",
           title: "This is a note",
           isFavorite: false,
           tags: ["tag1", "tag2"],
@@ -170,7 +182,7 @@ export default function GlobalContextProvider({
           creationDate: "2022-02-01",
         },
         {
-          id: "2",
+          _id: "2",
           title: "This is a note",
           isFavorite: false,
           tags: ["tag1", "tag2"],
@@ -191,7 +203,7 @@ export default function GlobalContextProvider({
           creationDate: "2022-02-01",
         },
         {
-          id: "3",
+          _id: "3",
           title: "This is a note 3",
           isFavorite: false,
           tags: ["tag1", "tag2"],
@@ -232,6 +244,7 @@ export default function GlobalContextProvider({
         openContentNoteObject: { openContentNote, setOpenContentNote },
         isMobileObject: { isMobile, setIsMobile },
         allNotesObject: { allNotes, setAllNotes },
+        selectedNoteObject: { selectedNote, setSelectedNote },
       }}
     >
       {children}

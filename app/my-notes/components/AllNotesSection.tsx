@@ -10,6 +10,7 @@ import { SingleNoteType } from "@/app/Types";
 
 interface CodeBlockProps {
   language: string;
+  code: string;
 }
 
 function AllNotesSection() {
@@ -33,21 +34,28 @@ function SingleNote({ note }: { note: SingleNoteType }) {
   const {
     openContentNoteObject: { openContentNote },
   } = useGlobalContext();
-  const { title, creationDate } = note;
+  const { title, creationDate, tags, description, code, isFavorite, language } =
+    note;
 
   return (
     <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md">
-      <NoteHeader title={title}></NoteHeader>
+      <NoteHeader title={title} isFavorite={isFavorite}></NoteHeader>
       <NoteDate creationDate={creationDate}></NoteDate>
-      <NoteTags></NoteTags>
-      <NoteDescription></NoteDescription>
-      <Code language="javascript"></Code>
-      <NoteFooter></NoteFooter>
+      <NoteTags tags={tags}></NoteTags>
+      <NoteDescription description={description}></NoteDescription>
+      <Code language={language} code={code}></Code>
+      <NoteFooter language={language}></NoteFooter>
     </div>
   );
 }
 
-function NoteHeader({ title }: { title: string }) {
+function NoteHeader({
+  title,
+  isFavorite,
+}: {
+  title: string;
+  isFavorite: boolean;
+}) {
   const {
     openContentNoteObject: { setOpenContentNote },
   } = useGlobalContext();
@@ -55,7 +63,7 @@ function NoteHeader({ title }: { title: string }) {
   return (
     <div className="flex justify-between mx-4">
       <span
-        className="font-bold text-lg w-[87%]"
+        className="font-bold text-lg w-[87%] cursor-pointer hover:text-blue-900"
         onClick={() => setOpenContentNote(true)}
       >
         {title}
@@ -85,37 +93,21 @@ function NoteTags({ tags }: { tags: string[] }) {
   );
 }
 
-function NoteDescription() {
+function NoteDescription({ description }: { description: string }) {
   return (
-    <div className="text-slate-600 text-[13px] mt-4 mx-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore ea
-      distinctio est fugiat modi debitis repellat nobis impedit doloribus velit?
-    </div>
+    <div className="text-slate-600 text-[13px] mt-4 mx-4">{description}</div>
   );
 }
 
-const Code: React.FC<CodeBlockProps> = ({ language }) => {
-  const codeString = `function SingleNote() {
-    return (
-      <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
-        <NoteHeader></NoteHeader>
-        <NoteDate></NoteDate>
-        <NoteTags></NoteTags>
-        <NoteDescription></NoteDescription>
-        <Code language="javascript"></Code>
-        <NoteFooter></NoteFooter>
-      </div>
-    );
-  }`;
-
+const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   return (
     <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
-      <SyntaxHighlighter language={language}>{codeString}</SyntaxHighlighter>
+      <SyntaxHighlighter language={language}>{code}</SyntaxHighlighter>
     </div>
   );
 };
 
-function NoteFooter() {
+function NoteFooter({ language }: { language: string }) {
   return (
     <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
       <div className="flex gap-1 items-center">
@@ -123,7 +115,7 @@ function NoteFooter() {
           fontSize={"medium"}
           className="mb-[2px]"
         ></JavascriptIcon>
-        Javascript
+        <span>{language}</span>
       </div>
       <DeleteIcon fontSize={"medium"} className="cursor-pointer"></DeleteIcon>
     </div>
