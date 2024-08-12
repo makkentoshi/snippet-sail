@@ -4,6 +4,7 @@ import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import UserProfile from "@/app/my-notes/components/UserProfile";
 import { useGlobalContext } from "@/ContextApi";
+import { v4 as uuidv4 } from "uuid";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -50,11 +51,12 @@ function AddSnippetButton() {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
     allNotesObject: { allNotes, setAllNotes },
+    isNewNoteObject: { isNewNote, setIsNewNote },
   } = useGlobalContext();
 
   function openTheContextNote() {
     const newSingleNote = {
-      _id: "5",
+      _id: uuidv4(),
       title: "",
       creationDate: "",
       tags: [],
@@ -72,7 +74,7 @@ function AddSnippetButton() {
   return (
     <Button
       onClick={openTheContextNote}
-      className="bg-[#31267a] text-white rounded-[40px] p-3 flex justify-center items-center hover:bg-blue-700 transition-all"
+      className="bg-[#31267a] text-white rounded-[40px] p-3 flex justify-center items-center hover:bg-blue-700 transition-all "
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -80,14 +82,15 @@ function AddSnippetButton() {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="size-4"
+        className="size-6"
       >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          d="M12 4.5v15m7.5-7.5h-15"
         />
       </svg>
+      <span>Add</span>
     </Button>
   );
 }

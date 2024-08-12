@@ -32,13 +32,20 @@ export default AllNotesSection;
 
 function SingleNote({ note }: { note: SingleNoteType }) {
   const {
-    openContentNoteObject: { openContentNote },
+    openContentNoteObject: { setOpenContentNote },
+    selectedNoteObject: { setSelectedNote },
   } = useGlobalContext();
+
+  const handleClick = () => {
+    setSelectedNote(note); 
+    setOpenContentNote(true); 
+  };
+
   const { title, creationDate, tags, description, code, isFavorite, language } =
     note;
 
   return (
-    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md">
+    <div onClick={handleClick} className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer">
       <NoteHeader title={title} isFavorite={isFavorite}></NoteHeader>
       <NoteDate creationDate={creationDate}></NoteDate>
       <NoteTags tags={tags}></NoteTags>
