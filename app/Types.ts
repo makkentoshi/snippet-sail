@@ -9,6 +9,11 @@ export interface SingleNoteType {
   creationDate: string;
 }
 
+export interface SingleTagType {
+  _id: string;
+  name: string;
+}
+
 export interface SideBarMenu {
   id: number;
   name: string;

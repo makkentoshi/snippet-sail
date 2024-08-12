@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import UserProfile from "@/app/my-notes/components/UserProfile";
 import { useGlobalContext } from "@/ContextApi";
 import { v4 as uuidv4 } from "uuid";
+import { useToast } from "@/components/ui/use-toast";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -47,34 +48,44 @@ const SearchBar = () => {
 export default SearchBar;
 
 function AddSnippetButton() {
+  const { toast } = useToast();
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
     allNotesObject: { allNotes, setAllNotes },
-    isNewNoteObject: { isNewNote, setIsNewNote },
   } = useGlobalContext();
 
   function openTheContextNote() {
     const newSingleNote = {
       _id: uuidv4(),
       title: "",
-      creationDate: "",
+      creationDate: new Date().toISOString(),
       tags: [],
       description: "",
       code: "",
       isFavorite: false,
       language: "",
     };
-    setAllNotes([...allNotes, newSingleNote]);
 
     setSelectedNote(newSingleNote);
     setOpenContentNote(true);
+
+    if (newSingleNote.title === "") {
+      toast({
+        title: "Ошибка",
+        description: "Нельзя создать заметку без названия.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setAllNotes([...allNotes, newSingleNote]);
   }
 
   return (
     <Button
       onClick={openTheContextNote}
-      className="bg-[#31267a] text-white rounded-[40px] p-3 flex justify-center items-center hover:bg-blue-700 transition-all "
+      className="bg-[#31267a] text-white rounded-[40px] p-3 flex justify-center items-center hover:bg-blue-700 transition-all"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

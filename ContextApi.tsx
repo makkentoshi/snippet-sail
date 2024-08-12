@@ -5,10 +5,10 @@ import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
+import { v4 as uuidv4 } from "uuid";
 import LightMode from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { SingleNoteType } from "./app/Types";
+import { SingleNoteType, SingleTagType } from "./app/Types";
 
 interface SideBarMenu {
   id: number;
@@ -149,8 +149,10 @@ export default function GlobalContextProvider({
   const [openContentNote, setOpenContentNote] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [allNotes, setAllNotes] = useState<SingleNoteType[]>([]);
+  const [allTags, setAllTags] = useState<SingleTagType[]>([])
   const [selectedNote, setSelectedNote] = useState<SingleNoteType | null>(null);
   const [isNewNote, setIsNewNote] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<SingleTagType[]>([]);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -238,6 +240,24 @@ export default function GlobalContextProvider({
         setAllNotes(allNotes);
       }, 1200);
     }
+    function updateAllTags() {
+      const allTags = [
+        {
+          _id: uuidv4(),
+          name: "tag1",
+        },
+        {
+          _id: uuidv4(),
+          name: "tag2",
+        },
+        {
+          _id: uuidv4(),
+          name: "tag3",
+        },
+      ];
+      setAllTags(allTags);
+    }
+    updateAllTags()
     updateAllNotes();
   }, []);
 

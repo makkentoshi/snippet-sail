@@ -47,6 +47,8 @@ const ContentNote = () => {
     }
   }, [singleNote]);
 
+
+
   return (
     <div
       className={`fixed top-0 ${

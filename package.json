@@ -21,6 +21,7 @@
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.5",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
     "antd": "^5.19.4",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
