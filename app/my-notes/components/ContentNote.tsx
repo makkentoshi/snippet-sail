@@ -3,6 +3,7 @@ import { SingleNoteType } from "@/app/Types";
 import { useGlobalContext } from "@/ContextApi";
 import { ThumbsUp } from "lucide-react";
 import React, { LabelHTMLAttributes, useEffect, useRef, useState } from "react";
+import { CheckOutlined, TagsOutlined } from "@ant-design/icons";
 
 const ContentNote = () => {
   const {
@@ -10,42 +11,79 @@ const ContentNote = () => {
     selectedNoteObject: { selectedNote, setSelectedNote },
     isNewNoteObject: { isNewNote, setIsNewNote },
     allNotesObject: { allNotes, setAllNotes },
+    selectedTagsObject: { selectedTags, setSelectedTags },
   } = useGlobalContext();
 
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [singleNote, setSingleNote] = useState<SingleNoteType | undefined>(
-    undefined
-  );
+  const [singleNote, setSingleNote] = useState<SingleNoteType | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     handleResize();
-
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
-    if (openContentNote && selectedNote) {
-      setSingleNote(selectedNote);
-    }
-  }, [openContentNote, selectedNote]);
-
-  useEffect(() => {
-    if (isNewNote) {
-      if (singleNote && singleNote.title !== "") {
-        setAllNotes([...allNotes, singleNote]);
-
-        setIsNewNote(false);
+    if (openContentNote) {
+      if (isNewNote) {
+        setSingleNote({
+          _id: "",
+          title: "",
+          tags: [],
+          isFavorite: false,
+          description: "",
+          code: "",
+          language: "",
+          creationDate: "",
+        });
+        setSelectedTags([]);
+      } else if (selectedNote) {
+        setSingleNote({ ...selectedNote });
+        setSelectedTags(
+          selectedNote.tags.map((tag) => ({ name: tag, _id: "" }))
+        );
       }
     }
-  }, [singleNote]);
+  }, [openContentNote, isNewNote, selectedNote, setSelectedTags]);
+
+  useEffect(() => {
+    if (singleNote && !isNewNote) {
+      const updatedNotes = allNotes.map((note) =>
+        note._id === singleNote._id ? singleNote : note
+      );
+      setAllNotes(updatedNotes);
+    }
+  }, [singleNote, allNotes, setAllNotes, isNewNote]);
+
+  const handleSaveNewNote = () => {
+    if (isNewNote && singleNote?.title) {
+      setAllNotes((prevNotes) => [...prevNotes, singleNote]);
+      setIsNewNote(false);
+      setOpenContentNote(false);
+    }
+  };
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSingleNote((prevNote) =>
+      prevNote ? { ...prevNote, title: e.target.value } : null
+    );
+  };
+
+  const handleTagToggle = (tag: SingleTagType) => {
+    const newTags = selectedTags.some((t) => t.name === tag.name)
+      ? selectedTags.filter((t) => t.name !== tag.name)
+      : [...selectedTags, tag];
+
+    setSelectedTags(newTags);
+    setSingleNote((prevNote) =>
+      prevNote ? { ...prevNote, tags: newTags.map((t) => t.name) } : null
+    );
+  };
+
+  const handleClose = () => {
+    handleSaveNewNote();
+    setOpenContentNote(false);
+  };
 
   return (
     <div
@@ -67,11 +105,8 @@ const ContentNote = () => {
           <ContentNoteHeader
             singleNote={singleNote}
             setSingleNote={setSingleNote}
-          ></ContentNoteHeader>
-          <NoteTags
-            singleNote={singleNote}
-            setSingleNote={setSingleNote}
-          ></NoteTags>
+          />
+          <NoteTags singleNote={singleNote} setSingleNote={setSingleNote} />
         </>
       )}
     </div>
@@ -117,8 +152,6 @@ function ContentNoteHeader({
     }
   }
 
-  const { title } = singleNote;
-
   return (
     <div className="flex jusitfy-between gap-8 mt-3 transition-all">
       <div className="flex gap-2 w-full">
@@ -142,7 +175,7 @@ function ContentNoteHeader({
         <textarea
           ref={textareaRef}
           placeholder="New Title..."
-          value={singleNote.title}
+          value={singleNote?.title}
           onChange={onUpdateTitle}
           onKeyDown={handleKeyDown}
           onBlur={() => setOnFocus(false)}
@@ -151,6 +184,9 @@ function ContentNoteHeader({
           onMouseLeave={() => setOnFocus(false)}
           className="font-bold text-xl outline-none resize-none h-auto overflow-hidden w-full"
         ></textarea>
+      </div>
+      <div className="ml-5">
+        <CheckOutlined  className="text-slate-400 mt-[px] cursor-pointer"/>
       </div>
       <div
         onClick={() => {
@@ -221,29 +257,11 @@ function NoteTags({
 
     setAllNotes(newAllNotes);
     setSingleNote(newSingleNote);
-  }, [selectedTags, allNotes, setAllNotes, setSingleNote, singleNote]);
+  }, [selectedTags]);
 
   return (
     <div className="flex text-[13px] items-center gap-2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="size-6 text-slate-400"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6 6h.008v.008H6V6Z"
-        />
-      </svg>
+    <TagsOutlined style={{ fontSize: '22px', color: '#08c' }} />
 
       <div
         onMouseEnter={() => setHovered(true)}
@@ -253,7 +271,7 @@ function NoteTags({
         <div className="flex gap-2 items-center flex-wrap select-none ">
           {singleNote.tags.length === 0 && (
             <div className="">
-              <span className="bg-slate-100 text-slate-400 p-1 px-2 rounded-xl">
+              <span className="bg-slate-100 text-slate-400 p-1 px-2 rounded-[15px]">
                 No Tags
               </span>
             </div>
@@ -287,7 +305,7 @@ function NoteTags({
             </svg>
           )}
         </div>
-        {isOpened && <TagsMenu></TagsMenu>}
+        {isOpened && <TagsMenu onClickedTag={onClickedTag}></TagsMenu>}
       </div>
     </div>
   );
@@ -309,7 +327,7 @@ function TagsMenu({
   } = useGlobalContext();
 
   return (
-    <ul className="absolute top-10 bg-slate-100 w-[60%] p-3 rounded-xl flex flex-col gap-2">
+    <ul className="absolute top-[40px] bg-slate-100 w-[60%] p-3 rounded-xl flex flex-col gap-2">
       {allTags.map((tag) => (
         <li
           key={tag._id}

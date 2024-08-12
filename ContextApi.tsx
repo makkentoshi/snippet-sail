@@ -274,6 +274,12 @@ export default function GlobalContextProvider({
     updateAllNotes();
   }, []);
 
+  useEffect(() => {
+    setSelectedTags(
+      (selectedNote?.tags || []).map((tag) => ({ _id: uuidv4(), name: tag }))
+    );
+  }, [selectedNote]);
+
   return (
     <ContextProvider.Provider
       value={{
