@@ -40,17 +40,18 @@ interface GlobalContextType {
     openContentNote: boolean;
     setOpenContentNote: React.Dispatch<React.SetStateAction<boolean>>;
   };
-
   isMobileObject: {
     isMobile: boolean;
     setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
   };
-
   allNotesObject: {
     allNotes: SingleNoteType[];
     setAllNotes: React.Dispatch<React.SetStateAction<SingleNoteType[]>>;
   };
-
+  allTagsObject: {
+    allTags: SingleTagType[];
+    setAllTags: React.Dispatch<React.SetStateAction<SingleTagType[]>>;
+  };
   selectedNoteObject: {
     selectedNote: SingleNoteType | null;
     setSelectedNote: React.Dispatch<
@@ -60,6 +61,10 @@ interface GlobalContextType {
   isNewNoteObject: {
     isNewNote: boolean;
     setIsNewNote: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  selectedTagsObject: {
+    selectedTags: SingleTagType[];
+    setSelectedTags: React.Dispatch<React.SetStateAction<SingleTagType[]>>;
   };
 }
 
@@ -88,6 +93,10 @@ const ContextProvider = createContext<GlobalContextType>({
     allNotes: [],
     setAllNotes: () => {},
   },
+  allTagsObject: {
+    allTags: [],
+    setAllTags: () => {},
+  },
   selectedNoteObject: {
     selectedNote: null,
     setSelectedNote: () => {},
@@ -95,6 +104,10 @@ const ContextProvider = createContext<GlobalContextType>({
   isNewNoteObject: {
     isNewNote: false,
     setIsNewNote: () => {},
+  },
+  selectedTagsObject: {
+    selectedTags: [],
+    setSelectedTags: () => {},
   },
 });
 
@@ -149,7 +162,7 @@ export default function GlobalContextProvider({
   const [openContentNote, setOpenContentNote] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [allNotes, setAllNotes] = useState<SingleNoteType[]>([]);
-  const [allTags, setAllTags] = useState<SingleTagType[]>([])
+  const [allTags, setAllTags] = useState<SingleTagType[]>([]);
   const [selectedNote, setSelectedNote] = useState<SingleNoteType | null>(null);
   const [isNewNote, setIsNewNote] = useState(false);
   const [selectedTags, setSelectedTags] = useState<SingleTagType[]>([]);
@@ -257,7 +270,7 @@ export default function GlobalContextProvider({
       ];
       setAllTags(allTags);
     }
-    updateAllTags()
+    updateAllTags();
     updateAllNotes();
   }, []);
 
@@ -275,6 +288,8 @@ export default function GlobalContextProvider({
         allNotesObject: { allNotes, setAllNotes },
         selectedNoteObject: { selectedNote, setSelectedNote },
         isNewNoteObject: { isNewNote, setIsNewNote },
+        allTagsObject: { allTags, setAllTags },
+        selectedTagsObject: { selectedTags, setSelectedTags },
       }}
     >
       {children}

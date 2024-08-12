@@ -47,8 +47,6 @@ const ContentNote = () => {
     }
   }, [singleNote]);
 
-
-
   return (
     <div
       className={`fixed top-0 ${
@@ -268,25 +266,20 @@ function NoteTags({
   );
 }
 
-function TagsMenu() {
-  const tags = [
-    {
-      _id: "1",
-      name: "tag1",
-    },
-    {
-      _id: "2",
-      name: "tag2",
-    },
-    {
-      _id: "3",
-      name: "tag3",
-    },
-    {
-      _id: "4",
-      name: "tag4",
-    },
-  ];
+interface SingleTagType {
+  _id: string;
+  name: string;
+}
+
+function TagsMenu({
+  onClickedTag,
+}: {
+  onClickedTag: (tag: SingleTagType) => void;
+}) {
+  const {
+    allTagsObject: { allTags },
+    selectedTagsObject: { selectedTags, setSelectedTags },
+  } = useGlobalContext();
 
   return (
     <ul className="absolute top-10 bg-slate-100 w-[60%] p-3 rounded-xl flex flex-col gap-2">
