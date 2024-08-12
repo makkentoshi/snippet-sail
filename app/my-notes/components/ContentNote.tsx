@@ -190,11 +190,38 @@ function NoteTags({
   const [hovered, setHovered] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
 
+  const {
+    allNotesObject: { allNotes, setAllNotes },
+    selectedTagsObject: { selectedTags, setSelectedTags },
+  } = useGlobalContext();
+
   useEffect(() => {
     if (isOpened) {
       setHovered(true);
     }
   }, [isOpened]);
+
+  function onClickedTag(tag: SingleTagType) {
+    if (selectedTags.some((t) => t.name === tag.name)) {
+      setSelectedTags(selectedTags.filter((t) => t.name !== tag.name));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  }
+
+  useEffect(() => {
+    const newSingleNote = {
+      ...singleNote,
+      tags: selectedTags.map((tag) => tag.name),
+    };
+
+    const newAllNotes = allNotes.map((note) =>
+      note._id === singleNote._id ? newSingleNote : note
+    );
+
+    setAllNotes(newAllNotes);
+    setSingleNote(newSingleNote);
+  }, [selectedTags, allNotes, setAllNotes, setSingleNote, singleNote]);
 
   return (
     <div className="flex text-[13px] items-center gap-2">
@@ -283,11 +310,22 @@ function TagsMenu({
 
   return (
     <ul className="absolute top-10 bg-slate-100 w-[60%] p-3 rounded-xl flex flex-col gap-2">
-      {tags.map((tag, index) => (
+      {allTags.map((tag) => (
         <li
-          key={index}
-          className="p-1 px-2 select-none cursor-pointer hover:bg-slate-300 text-slate-500 rounded-[10px] transition-all"
-        ></li>
+          key={tag._id}
+          onClick={() => {
+            onClickedTag(tag);
+          }}
+          className={`${
+            selectedTags.some(
+              (t) => t.name.toLowerCase() === tag.name.toLocaleLowerCase()
+            )
+              ? "bg-slate-300"
+              : ""
+          } p-1 px-2 select-none cursor-pointer hover:bg-slate-300 text-slate-500 rounded-[13px] transition-all`}
+        >
+          {tag.name}
+        </li>
       ))}
     </ul>
   );
