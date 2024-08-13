@@ -41,7 +41,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     setOpenContentNote(true); 
   };
 
-  const { title, creationDate, tags, description, code, isFavorite, language } =
+  const { title, creationDate, tags = [], description, code, isFavorite = false, language } =
     note;
 
   return (

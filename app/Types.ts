@@ -1,8 +1,8 @@
 export interface SingleNoteType {
   _id: string;
   title: string;
-  isFavorite: boolean;
-  tags: string[];
+  isFavorite?: boolean;
+  tags?: string[];
   description: string;
   code: string;
   language: string;

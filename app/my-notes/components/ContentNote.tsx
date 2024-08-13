@@ -1,9 +1,13 @@
 "use client";
+import { useCallback } from "react";
 import { SingleNoteType } from "@/app/Types";
 import { useGlobalContext } from "@/ContextApi";
 import { ThumbsUp } from "lucide-react";
 import React, { LabelHTMLAttributes, useEffect, useRef, useState } from "react";
 import { CheckOutlined, TagsOutlined } from "@ant-design/icons";
+import { Button } from "@/components/ui/button";
+import { v4 as uuidv4 } from "uuid";
+import { useToast } from "@/components/ui/use-toast";
 
 const ContentNote = () => {
   const {
@@ -25,25 +29,34 @@ const ContentNote = () => {
   }, []);
 
   useEffect(() => {
-    if (openContentNote) {
-      if (isNewNote) {
-        setSingleNote({
-          _id: "",
-          title: "",
-          tags: [],
-          isFavorite: false,
-          description: "",
-          code: "",
-          language: "",
-          creationDate: "",
-        });
-        setSelectedTags([]);
-      } else if (selectedNote) {
-        setSingleNote({ ...selectedNote });
-        setSelectedTags(
-          selectedNote.tags.map((tag) => ({ name: tag, _id: "" }))
-        );
-      }
+    console.log("openContentNote:", openContentNote);
+    console.log("isNewNote:", isNewNote);
+
+    if (!openContentNote) return;
+
+    if (isNewNote) {
+      const newNote = {
+        _id: uuidv4(),
+        title: "",
+        tags: [],
+        isFavorite: false,
+        description: "",
+        code: "",
+        language: "",
+        creationDate: new Date().toISOString(),
+      };
+
+      setSingleNote(newNote);
+      console.log("New note initialized:", newNote);
+      setSelectedTags([]);
+    } else if (selectedNote) {
+      const noteToEdit = { ...selectedNote };
+      setSingleNote(noteToEdit);
+      console.log("Selected note loaded:", noteToEdit);
+
+      setSelectedTags(
+        selectedNote.tags?.map((tag) => ({ name: tag, _id: uuidv4() })) || []
+      );
     }
   }, [openContentNote, isNewNote, selectedNote, setSelectedTags]);
 
@@ -107,6 +120,10 @@ const ContentNote = () => {
             setSingleNote={setSingleNote}
           />
           <NoteTags singleNote={singleNote} setSingleNote={setSingleNote} />
+          <NoteDescription
+            singleNote={singleNote}
+            setSingleNote={setSingleNote}
+          ></NoteDescription>
         </>
       )}
     </div>
@@ -119,10 +136,8 @@ function ContentNoteHeader({
   singleNote,
   setSingleNote,
 }: {
-  singleNote: SingleNoteType;
-  setSingleNote: React.Dispatch<
-    React.SetStateAction<SingleNoteType | undefined>
-  >;
+  singleNote: SingleNoteType | null;
+  setSingleNote: React.Dispatch<React.SetStateAction<SingleNoteType | null>>;
 }) {
   const {
     allNotesObject: { allNotes, setAllNotes },
@@ -134,6 +149,8 @@ function ContentNoteHeader({
   const [onFocus, setOnFocus] = useState(false);
 
   function onUpdateTitle(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    if (!singleNote) return;
+
     const newSingleNote = { ...singleNote, title: event.target.value };
     setSingleNote(newSingleNote);
 
@@ -145,6 +162,25 @@ function ContentNoteHeader({
     });
     setAllNotes(newAllNotes);
   }
+
+  const handlePostNote = useCallback(() => {
+    if (singleNote && singleNote.title.trim() !== "") {
+      const newNote = { ...singleNote };
+
+      setAllNotes((prevNotes) => [...prevNotes, newNote]);
+      setSingleNote(null);
+      setIsNewNote(false);
+      setOpenContentNote(false);
+    } else {
+      alert("You can't create a code snippet without a title");
+    }
+  }, [
+    singleNote,
+    setAllNotes,
+    setSingleNote,
+    setIsNewNote,
+    setOpenContentNote,
+  ]);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter") {
@@ -185,15 +221,22 @@ function ContentNoteHeader({
           className="font-bold text-xl outline-none resize-none h-auto overflow-hidden w-full"
         ></textarea>
       </div>
-      <div className="ml-5">
-        <CheckOutlined  className="text-slate-400 mt-[px] cursor-pointer"/>
-      </div>
-      <div
+      <Button
+        className="mt-1 border rounded-xl bg-slate-100 hover:bg-slate-300  transition-all  "
+        onClick={handlePostNote}
+      >
+        <CheckOutlined
+          className="text-slate-400   cursor-pointer "
+          style={{ fontSize: "20px", color: "bg-slate-500" }}
+        />
+        <span className="px-2">Post</span>
+      </Button>
+      <Button
         onClick={() => {
           setIsNewNote(false);
           setOpenContentNote(false);
         }}
-        className="text-slate-400 mt-[px] cursor-pointer"
+        className="text-slate-400 mt-1 cursor-pointer border rounded-xl bg-slate-200 hover:bg-slate-300 "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +252,7 @@ function ContentNoteHeader({
             d="M6 18 18 6M6 6l12 12"
           />
         </svg>
-      </div>
+      </Button>
     </div>
   );
 }
@@ -218,10 +261,8 @@ function NoteTags({
   singleNote,
   setSingleNote,
 }: {
-  singleNote: SingleNoteType;
-  setSingleNote: React.Dispatch<
-    React.SetStateAction<SingleNoteType | undefined>
-  >;
+  singleNote: SingleNoteType | null;
+  setSingleNote: React.Dispatch<React.SetStateAction<SingleNoteType | null>>;
 }) {
   const [hovered, setHovered] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
@@ -246,22 +287,23 @@ function NoteTags({
   }
 
   useEffect(() => {
-    const newSingleNote = {
-      ...singleNote,
-      tags: selectedTags.map((tag) => tag.name),
-    };
+    if (singleNote) {
+      const newSingleNote = {
+        ...singleNote,
+        tags: selectedTags.map((tag) => tag.name),
+      };
+      const newAllNotes = allNotes.map((note) =>
+        note._id === singleNote._id ? newSingleNote : note
+      );
 
-    const newAllNotes = allNotes.map((note) =>
-      note._id === singleNote._id ? newSingleNote : note
-    );
-
-    setAllNotes(newAllNotes);
-    setSingleNote(newSingleNote);
+      setAllNotes(newAllNotes);
+      setSingleNote(newSingleNote);
+    }
   }, [selectedTags]);
 
   return (
     <div className="flex text-[13px] items-center gap-2">
-    <TagsOutlined style={{ fontSize: '22px', color: '#08c' }} />
+      <TagsOutlined style={{ fontSize: "22px", color: "#08c" }} />
 
       <div
         onMouseEnter={() => setHovered(true)}
@@ -269,23 +311,24 @@ function NoteTags({
         className="flex justify-between w-full relative"
       >
         <div className="flex gap-2 items-center flex-wrap select-none ">
-          {singleNote.tags.length === 0 && (
-            <div className="">
+          {!singleNote || !singleNote.tags || singleNote.tags.length === 0 ? (
+            <div>
               <span className="bg-slate-100 text-slate-400 p-1 px-2 rounded-[15px]">
                 No Tags
               </span>
             </div>
+          ) : (
+            singleNote.tags.map((tag, index) => (
+              <div
+                key={index}
+                className="bg-slate-100 text-slate-400 px-2 py-1 rounded-xl"
+              >
+                {tag}
+              </div>
+            ))
           )}
 
-          {singleNote.tags.map((tag, index) => (
-            <div
-              key={index}
-              className="bg-slate-100 text-slate-400 px-2 py-1 rounded-xl"
-            >
-              {tag}
-            </div>
-          ))}
-          {hovered && singleNote.tags.length > 0 && (
+          {hovered && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -346,5 +389,51 @@ function TagsMenu({
         </li>
       ))}
     </ul>
+  );
+}
+
+function NoteDescription({
+  singleNote,
+  setSingleNote,
+}: {
+  singleNote: SingleNoteType | null;
+  setSingleNote: React.Dispatch<React.SetStateAction<SingleNoteType | null>>;
+}) {
+  const [description, setDescription] = useState(singleNote?.description || "");
+
+  useEffect(() => {
+    if (singleNote) {
+      setDescription(singleNote.description || "");
+    }
+  }, [singleNote]);
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const newDescription = e.target.value;
+    setDescription(newDescription);
+
+    if (singleNote) {
+      const updatedNote = { ...singleNote, description: newDescription };
+      setSingleNote(updatedNote);
+    }
+  };
+
+  return (
+    <div className="flex flex-col">
+      <label
+        htmlFor="note-description"
+        className="text-sm font-medium text-gray-700"
+      >
+        Description
+      </label>
+      <textarea
+        id="note-description"
+        value={singleNote?.description}
+        onChange={handleDescriptionChange}
+        className="mt-1 p-2 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300"
+        rows={4}
+      />
+    </div>
   );
 }

@@ -48,39 +48,19 @@ const SearchBar = () => {
 export default SearchBar;
 
 function AddSnippetButton() {
-  const { toast } = useToast();
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
-    allNotesObject: { allNotes, setAllNotes },
+    isNewNoteObject: { setIsNewNote }, 
   } = useGlobalContext();
 
   function openTheContextNote() {
-    const newSingleNote = {
-      _id: uuidv4(),
-      title: "",
-      creationDate: new Date().toISOString(),
-      tags: [],
-      description: "",
-      code: "",
-      isFavorite: false,
-      language: "",
-    };
-
-    setSelectedNote(newSingleNote);
+    setIsNewNote(true); 
+    setSelectedNote(null); 
     setOpenContentNote(true);
-
-    if (newSingleNote.title === "") {
-      toast({
-        title: "Ошибка",
-        description: "Нельзя создать заметку без названия.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setAllNotes([...allNotes, newSingleNote]);
   }
+
+ 
 
   return (
     <Button
