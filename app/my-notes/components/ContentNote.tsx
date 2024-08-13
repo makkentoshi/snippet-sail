@@ -8,6 +8,11 @@ import { CheckOutlined, TagsOutlined } from "@ant-design/icons";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/components/ui/use-toast";
+import { Select } from "antd";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { languages, LanguageOption } from "../../../app/languages";
+import { Toaster } from "@/components/ui/toaster";
 
 const ContentNote = () => {
   const {
@@ -29,9 +34,6 @@ const ContentNote = () => {
   }, []);
 
   useEffect(() => {
-    console.log("openContentNote:", openContentNote);
-    console.log("isNewNote:", isNewNote);
-
     if (!openContentNote) return;
 
     if (isNewNote) {
@@ -47,12 +49,11 @@ const ContentNote = () => {
       };
 
       setSingleNote(newNote);
-      console.log("New note initialized:", newNote);
+
       setSelectedTags([]);
     } else if (selectedNote) {
       const noteToEdit = { ...selectedNote };
       setSingleNote(noteToEdit);
-      console.log("Selected note loaded:", noteToEdit);
 
       setSelectedTags(
         selectedNote.tags?.map((tag) => ({ name: tag, _id: uuidv4() })) || []
@@ -114,17 +115,82 @@ const ContentNote = () => {
       style={{ display: openContentNote ? "block" : "none" }}
     >
       {singleNote && (
-        <>
-          <ContentNoteHeader
-            singleNote={singleNote}
-            setSingleNote={setSingleNote}
-          />
-          <NoteTags singleNote={singleNote} setSingleNote={setSingleNote} />
-          <NoteDescription
-            singleNote={singleNote}
-            setSingleNote={setSingleNote}
-          ></NoteDescription>
-        </>
+        <div className="px-[10%] py-[3%]">
+          <div className="flex items-start gap-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="transition-all size-6 mt-3  text-[#31267a]"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+              />
+            </svg>
+            <div className="w-full">
+              <ContentNoteHeader
+                singleNote={singleNote}
+                setSingleNote={setSingleNote}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 mt-6">
+            <TagsOutlined style={{ fontSize: "22px", color: "#31267a" }} />
+            <div className="w-full">
+              <NoteTags singleNote={singleNote} setSingleNote={setSingleNote} />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 mt-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 text-[#31267a]"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+              />
+            </svg>
+
+            <div className="w-full">
+              <NoteDescription
+                singleNote={singleNote}
+                setSingleNote={setSingleNote}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 mt-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 text-[#31267a]"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M14.25 9.75 16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
+              />
+            </svg>
+
+            <div className="w-full">
+              <NoteCode singleNote={singleNote} setSingleNote={setSingleNote} />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -146,7 +212,6 @@ function ContentNoteHeader({
   } = useGlobalContext();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [onFocus, setOnFocus] = useState(false);
 
   function onUpdateTitle(event: React.ChangeEvent<HTMLTextAreaElement>) {
     if (!singleNote) return;
@@ -162,7 +227,7 @@ function ContentNoteHeader({
     });
     setAllNotes(newAllNotes);
   }
-
+  const { toast } = useToast();
   const handlePostNote = useCallback(() => {
     if (singleNote && singleNote.title.trim() !== "") {
       const newNote = { ...singleNote };
@@ -172,7 +237,7 @@ function ContentNoteHeader({
       setIsNewNote(false);
       setOpenContentNote(false);
     } else {
-      alert("You can't create a code snippet without a title");
+      alert("You can't create a snippet without a title");
     }
   }, [
     singleNote,
@@ -187,27 +252,11 @@ function ContentNoteHeader({
       event.preventDefault();
     }
   }
+  const [onFocus, setOnFocus] = useState(false);
 
   return (
     <div className="flex jusitfy-between gap-8 mt-3 transition-all">
       <div className="flex gap-2 w-full">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className={`${
-            onFocus ? "text-blue-800" : "text-slate-400"
-          } size-6 mt-[1.3px] transition-all`}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
-          />
-        </svg>
-
         <textarea
           ref={textareaRef}
           placeholder="New Title..."
@@ -236,7 +285,7 @@ function ContentNoteHeader({
           setIsNewNote(false);
           setOpenContentNote(false);
         }}
-        className="text-slate-400 mt-1 cursor-pointer border rounded-xl bg-slate-200 hover:bg-slate-300 "
+        className="text-slate-500 mt-1 cursor-pointer border rounded-full px-2 bg-gray-100 hover:bg-slate-300 "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -303,17 +352,18 @@ function NoteTags({
 
   return (
     <div className="flex text-[13px] items-center gap-2">
-      <TagsOutlined style={{ fontSize: "22px", color: "#08c" }} />
-
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="flex justify-between w-full relative"
       >
-        <div className="flex gap-2 items-center flex-wrap select-none ">
+        <div
+          className="flex gap-2 items-center flex-wrap select-none pb-4"
+          style={{ minHeight: "40px" }}
+        >
           {!singleNote || !singleNote.tags || singleNote.tags.length === 0 ? (
             <div>
-              <span className="bg-slate-100 text-slate-400 p-1 px-2 rounded-[15px]">
+              <span className="bg-slate-100 text-slate-500 p-1 px-2  rounded-[12px]">
                 No Tags
               </span>
             </div>
@@ -336,19 +386,21 @@ function NoteTags({
               strokeWidth={1.5}
               stroke="currentColor"
               className="size-6 text-slate-400 cursor-pointer"
-              onClick={() => {
-                setIsOpened(!isOpened);
-              }}
+              onClick={() => setIsOpened(!isOpened)}
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                d={
+                  isOpened
+                    ? "m19.5 8.25-7.5 7.5-7.5-7.5"
+                    : "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                }
               />
             </svg>
           )}
         </div>
-        {isOpened && <TagsMenu onClickedTag={onClickedTag}></TagsMenu>}
+        {isOpened && <TagsMenu onClickedTag={onClickedTag} />}
       </div>
     </div>
   );
@@ -370,7 +422,7 @@ function TagsMenu({
   } = useGlobalContext();
 
   return (
-    <ul className="absolute top-[40px] bg-slate-100 w-[60%] p-3 rounded-xl flex flex-col gap-2">
+    <ul className="absolute top-[30px] bg-slate-100 w-[40%] p-4 rounded-[8px] flex flex-col gap-2">
       {allTags.map((tag) => (
         <li
           key={tag._id}
@@ -421,19 +473,72 @@ function NoteDescription({
 
   return (
     <div className="flex flex-col">
-      <label
-        htmlFor="note-description"
-        className="text-sm font-medium text-gray-700"
-      >
-        Description
-      </label>
       <textarea
         id="note-description"
         value={singleNote?.description}
         onChange={handleDescriptionChange}
-        className="mt-1 p-2 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300"
+        className="mt-1 p-2 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm outline outline-slate-100"
         rows={4}
       />
     </div>
   );
 }
+
+interface NoteCodeProps {
+  singleNote: SingleNoteType | null;
+  setSingleNote: React.Dispatch<React.SetStateAction<SingleNoteType | null>>;
+}
+
+const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<LanguageOption | null>(null);
+
+  const handleLanguageChange = (option: LanguageOption | null) => {
+    setSelectedLanguage(option);
+    if (singleNote) {
+      setSingleNote({
+        ...singleNote,
+        language: option ? option.value : "",
+      });
+    }
+  };
+
+  const handleCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (singleNote) {
+      setSingleNote({
+        ...singleNote,
+        code: event.target.value,
+      });
+    }
+  };
+
+  return (
+    <div className="note-code-container py-5">
+      <div className="flex">
+        <Select
+          options={languages}
+          value={selectedLanguage}
+          onChange={handleLanguageChange}
+          placeholder="Select language"
+          className="language-selector absolute right-[11%] z-50"
+        />
+        <textarea
+          value={singleNote?.code || ""}
+          onChange={handleCodeChange}
+          placeholder="Write your code here..."
+          rows={10}
+          className="code-textarea w-full outline-dashed outline-slate-200 p-5 relative"
+        />
+      </div>
+
+      <div className="code-preview">
+        <SyntaxHighlighter
+          language={singleNote?.language || "javascript"}
+          style={solarizedlight}
+        >
+          {singleNote?.code || ""}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+};
