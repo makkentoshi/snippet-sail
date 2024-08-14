@@ -20,9 +20,11 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
 const MenuList = () => {
   return (
     <Menu
-      className="h-[88vh] mt-[2rem] flex flex-col gap-[15px] text-[1rem]   "
+      className="h-[88vh] mt-[2rem] flex flex-col gap-[15px] text-[1rem]  font-semibold   "
       mode="inline"
-      style={{ width: 256 }}
+      style={{ width: 256  }}
+      
+      
     >
       <Menu.Item key="home" icon={<HomeOutlined />}>
         Home

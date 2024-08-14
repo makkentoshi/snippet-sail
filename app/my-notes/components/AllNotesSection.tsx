@@ -3,10 +3,9 @@ import { ThumbsUp } from "lucide-react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import JavascriptIcon from "@mui/icons-material/Javascript";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useGlobalContext } from "@/ContextApi";
 import { SingleNoteType } from "@/app/Types";
+import { vs } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 
 interface CodeBlockProps {
   language: string;
@@ -109,7 +108,7 @@ function NoteDescription({ description }: { description: string }) {
 const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   return (
     <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
-      <SyntaxHighlighter language={language}>{code}</SyntaxHighlighter>
+      <SyntaxHighlighter language={language} style={vs}>{code}</SyntaxHighlighter>
     </div>
   );
 };

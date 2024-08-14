@@ -10,9 +10,13 @@ import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/components/ui/use-toast";
 import { Select } from "antd";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { languages, LanguageOption } from "../../../app/languages";
+import {
+  vs,
+  vscDarkPlus,
+  materialLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Toaster } from "@/components/ui/toaster";
+import MonacoEditor from "@monaco-editor/react";
 
 const ContentNote = () => {
   const {
@@ -115,7 +119,7 @@ const ContentNote = () => {
       style={{ display: openContentNote ? "block" : "none" }}
     >
       {singleNote && (
-        <div className="px-[10%] py-[3%]">
+        <div className="px-[10%] py-[4%]">
           <div className="flex items-start gap-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -177,7 +181,7 @@ const ContentNote = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6 text-[#31267a]"
+              className="size-6 text-[#31267a] flex-shrink-0"
             >
               <path
                 strokeLinecap="round"
@@ -190,7 +194,18 @@ const ContentNote = () => {
               <NoteCode singleNote={singleNote} setSingleNote={setSingleNote} />
             </div>
           </div>
+          <div className="mt-6">
+            <ConfirmNote
+              singleNote={singleNote}
+              setAllNotes={setAllNotes}
+              setSingleNote={setSingleNote}
+              setIsNewNote={setIsNewNote}
+              setOpenContentNote={setOpenContentNote}
+            />
+          </div>
+        
         </div>
+        
       )}
     </div>
   );
@@ -270,16 +285,7 @@ function ContentNoteHeader({
           className="font-bold text-xl outline-none resize-none h-auto overflow-hidden w-full"
         ></textarea>
       </div>
-      <Button
-        className="mt-1 border rounded-xl bg-slate-100 hover:bg-slate-300  transition-all  "
-        onClick={handlePostNote}
-      >
-        <CheckOutlined
-          className="text-slate-400   cursor-pointer "
-          style={{ fontSize: "20px", color: "bg-slate-500" }}
-        />
-        <span className="px-2">Post</span>
-      </Button>
+
       <Button
         onClick={() => {
           setIsNewNote(false);
@@ -488,6 +494,10 @@ interface NoteCodeProps {
   singleNote: SingleNoteType | null;
   setSingleNote: React.Dispatch<React.SetStateAction<SingleNoteType | null>>;
 }
+interface LanguageOption {
+  value: string;
+  label: string;
+}
 
 const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
   const [selectedLanguage, setSelectedLanguage] =
@@ -503,41 +513,95 @@ const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
     }
   };
 
-  const handleCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (singleNote) {
-      setSingleNote({
-        ...singleNote,
-        code: event.target.value,
-      });
-    }
+  const handleCodeChange = (value: string | undefined) => {
+    setSingleNote((prev) => {
+      if (prev) {
+        return {
+          ...prev,
+          code: value || "",
+        };
+      } else {
+        return {
+          _id: uuidv4(),
+          code: value || "",
+          title: "Unknown Title",
+        };
+      }
+    });
   };
 
   return (
-    <div className="note-code-container py-5">
-      <div className="flex">
-        <Select
-          options={languages}
-          value={selectedLanguage}
-          onChange={handleLanguageChange}
-          placeholder="Select language"
-          className="language-selector absolute right-[11%] z-50"
-        />
-        <textarea
-          value={singleNote?.code || ""}
-          onChange={handleCodeChange}
-          placeholder="Write your code here..."
-          rows={10}
-          className="code-textarea w-full outline-dashed outline-slate-200 p-5 relative"
-        />
-      </div>
+    <div className="note-code-container py-5 border rounded-[6px]">
+      <MonacoEditor
+        height="400px"
+        onChange={handleCodeChange}
+        defaultLanguage="javascript"
+        value={singleNote?.code || ""}
+        theme="vs-light"
+        options={{
+          minimap: { enabled: false },
+          automaticLayout: true,
+        }}
+      />
+    </div>
+  );
+};
 
-      <div className="code-preview">
-        <SyntaxHighlighter
-          language={singleNote?.language || "javascript"}
-          style={solarizedlight}
+interface ConfirmNoteProps {
+  singleNote: SingleNoteType | null;
+  setAllNotes: React.Dispatch<React.SetStateAction<SingleNoteType[]>>;
+  setSingleNote: React.Dispatch<React.SetStateAction<SingleNoteType | null>>;
+  setIsNewNote: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenContentNote: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ConfirmNote: React.FC<ConfirmNoteProps> = ({
+  singleNote,
+  setAllNotes,
+  setSingleNote,
+  setIsNewNote,
+  setOpenContentNote,
+}) => {
+  const handleConfirm = useCallback(() => {
+    if (singleNote && singleNote.title.trim() !== "") {
+      const newNote = { ...singleNote };
+
+      setAllNotes((prevNotes) => [...prevNotes, newNote]);
+      setSingleNote(null);
+      setIsNewNote(false);
+      setOpenContentNote(false);
+    } else {
+      alert("You can't create a code snippet without a title!");
+    }
+  }, [
+    singleNote,
+    setAllNotes,
+    setSingleNote,
+    setIsNewNote,
+    setOpenContentNote,
+  ]);
+
+  const handleCancel = () => {
+    setSingleNote(null);
+    setIsNewNote(false);
+    setOpenContentNote(false);
+  };
+
+  return (
+    <div className="confirm-note py-5 rounded-[6px] transition-all">
+      <div className="flex flex-col gap-2">
+        <Button
+          onClick={handleConfirm}
+          className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800"
         >
-          {singleNote?.code || ""}
-        </SyntaxHighlighter>
+          Confirm
+        </Button>
+        <Button
+          onClick={handleCancel}
+          className="w-full bg-none  text-blue-900  border  py-2 rounded hover:text-gray-500 hover:bg-slate-50"
+        >
+          Cancel
+        </Button>
       </div>
     </div>
   );

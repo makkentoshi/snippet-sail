@@ -1,13 +1,14 @@
 export interface SingleNoteType {
   _id: string;
+  code: string;
   title: string;
   isFavorite?: boolean;
   tags?: string[];
-  description: string;
-  code: string;
-  language: string;
-  creationDate: string;
+  description?: string;
+  language?: string;
+  creationDate?: string;
 }
+
 
 export interface SingleTagType {
   _id: string;
