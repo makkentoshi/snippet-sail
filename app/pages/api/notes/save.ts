@@ -6,6 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("API route /api/notes/save called");
   if (req.method === "POST") {
     const {
       _id,
