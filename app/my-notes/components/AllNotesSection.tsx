@@ -36,21 +36,31 @@ function SingleNote({ note }: { note: SingleNoteType }) {
   } = useGlobalContext();
 
   const handleClick = () => {
-    setSelectedNote(note); 
-    setOpenContentNote(true); 
+    setSelectedNote(note);
+    setOpenContentNote(true);
   };
 
-  const { title, creationDate, tags = [], description, code, isFavorite = false, language } =
-    note;
+  const {
+    title,
+    creationDate,
+    tags = [],
+    description,
+    code,
+    isFavorite = false,
+    language,
+  } = note;
 
   return (
-    <div onClick={handleClick} className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer">
-      <NoteHeader title={title} isFavorite={isFavorite}></NoteHeader>
-      <NoteDate creationDate={creationDate}></NoteDate>
-      <NoteTags tags={tags}></NoteTags>
-      <NoteDescription description={description}></NoteDescription>
-      <Code language={language} code={code}></Code>
-      <NoteFooter language={language}></NoteFooter>
+    <div
+      onClick={handleClick}
+      className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer"
+    >
+    <NoteHeader title={title ?? "Untitled"} isFavorite={isFavorite ?? false} />
+    <NoteDate creationDate={creationDate ?? "Unknown date"} />
+    <NoteTags tags={tags ?? []} />
+    <NoteDescription description={description ?? "No description"} />
+    <Code language={language ?? "Not Selected"} code={code ?? ""} />
+    <NoteFooter language={language ?? "Not Selectedк"} />
     </div>
   );
 }
@@ -74,7 +84,20 @@ function NoteHeader({
       >
         {title}
       </span>
-      <ThumbsUp className="text-slate-400 cursor-pointer"></ThumbsUp>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="size-6 cursor-pointer text-slate-600"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+        />
+      </svg>
     </div>
   );
 }
@@ -108,7 +131,9 @@ function NoteDescription({ description }: { description: string }) {
 const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   return (
     <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
-      <SyntaxHighlighter language={language} style={vs}>{code}</SyntaxHighlighter>
+      <SyntaxHighlighter language={language} style={vs}>
+        {code}
+      </SyntaxHighlighter>
     </div>
   );
 };

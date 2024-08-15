@@ -27,7 +27,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex w-full sm:w-[95%] bg-white rounded-[15px] justify-between h-[70px] items-center px-1">
+    <div className="flex w-full sm:w-[95%] bg-white rounded-[15px] justify-between h-[70px] items-center ">
       <div className="flex p-2">
         {isMobile ? <UserButton /> : <UserProfile />}
       </div>
@@ -51,16 +51,14 @@ function AddSnippetButton() {
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
-    isNewNoteObject: { setIsNewNote }, 
+    isNewNoteObject: { setIsNewNote },
   } = useGlobalContext();
 
   function openTheContextNote() {
-    setIsNewNote(true); 
-    setSelectedNote(null); 
+    setIsNewNote(true);
+    setSelectedNote(null);
     setOpenContentNote(true);
   }
-
- 
 
   return (
     <Button
@@ -81,7 +79,7 @@ function AddSnippetButton() {
           d="M12 4.5v15m7.5-7.5h-15"
         />
       </svg>
-      <span>Add</span>
+      <span className="sm:block hidden">New Snippet</span>
     </Button>
   );
 }

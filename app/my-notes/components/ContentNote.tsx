@@ -203,9 +203,7 @@ const ContentNote = () => {
               setOpenContentNote={setOpenContentNote}
             />
           </div>
-        
         </div>
-        
       )}
     </div>
   );
@@ -291,7 +289,7 @@ function ContentNoteHeader({
           setIsNewNote(false);
           setOpenContentNote(false);
         }}
-        className="text-slate-500 mt-1 cursor-pointer border rounded-full px-2 bg-gray-100 hover:bg-slate-300 "
+        className="text-slate-500 mt-1 cursor-pointer  rounded-full px-2   "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -483,7 +481,7 @@ function NoteDescription({
         id="note-description"
         value={singleNote?.description}
         onChange={handleDescriptionChange}
-        className="mt-1 p-2 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm outline outline-slate-100"
+        className="mt-1 p-2 rounded-[6px] focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm outline-none  border  "
         rows={4}
       />
     </div>
