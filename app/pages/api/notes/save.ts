@@ -35,4 +35,16 @@ export default async function handler(
     res.setHeader("Allow", ["POST"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+  if (req.method === "GET") {
+    try {
+      await connect();
+      const notes = await Note.find({});
+      res.status(200).json(notes);
+    } catch (error) {
+      res.status(500).json({ error: "Error retrieving notes" });
+    }
+  } else {
+    res.setHeader("Allow", ["GET"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 }
