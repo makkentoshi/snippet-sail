@@ -6,8 +6,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("API route /api/notes/save called");
-  if (req.method === "POST") {
+  await connect();
+
+  if (req.method === "GET") {
+    try {
+      const notes = await Note.find({});
+      res.status(200).json(notes);
+    } catch (error) {
+      res.status(500).json({ error: "Error retrieving notes" });
+    }
+  } else if (req.method === "POST") {
     const {
       _id,
       title,
@@ -20,8 +28,6 @@ export default async function handler(
     } = req.body;
 
     try {
-      await connect();
-      console.log("Connected");
       const note = await Note.findByIdAndUpdate(
         _id,
         { title, tags, isFavorite, description, code, language, creationDate },
@@ -32,19 +38,7 @@ export default async function handler(
       res.status(500).json({ error: "Error saving note" });
     }
   } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-  if (req.method === "GET") {
-    try {
-      await connect();
-      const notes = await Note.find({});
-      res.status(200).json(notes);
-    } catch (error) {
-      res.status(500).json({ error: "Error retrieving notes" });
-    }
-  } else {
-    res.setHeader("Allow", ["GET"]);
+    res.setHeader("Allow", ["GET", "POST"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

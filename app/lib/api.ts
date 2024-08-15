@@ -1,7 +1,7 @@
 import { SingleNoteType } from "../Types";
 
 export async function fetchNotes() {
-  const response = await fetch("/api/notes/save");
+  const response = await fetch("/api/notes");  
   if (!response.ok) {
     throw new Error("Failed to fetch notes");
   }
@@ -9,7 +9,7 @@ export async function fetchNotes() {
 }
 
 export async function postNote(note: SingleNoteType) {
-  const response = await fetch("/api/notes/save", {
+  const response = await fetch("/api/notes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -566,7 +566,7 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
     if (singleNote && singleNote.title.trim() !== "") {
       console.log(singleNote);
       try {
-        const response = await fetch("/api/notes/save", {
+        const response = await fetch("/api/notes", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
