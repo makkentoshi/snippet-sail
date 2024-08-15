@@ -66,6 +66,11 @@ interface GlobalContextType {
     selectedTags: SingleTagType[];
     setSelectedTags: React.Dispatch<React.SetStateAction<SingleTagType[]>>;
   };
+  favoriteNotesObject: {
+    favoriteNotes: SingleNoteType[];
+    setFavoriteNotes: React.Dispatch<React.SetStateAction<SingleNoteType[]>>;
+  };
+  toggleFavorite: (id: string) => void;
 }
 
 const ContextProvider = createContext<GlobalContextType>({
@@ -109,6 +114,11 @@ const ContextProvider = createContext<GlobalContextType>({
     selectedTags: [],
     setSelectedTags: () => {},
   },
+  favoriteNotesObject: {
+    favoriteNotes: [],
+    setFavoriteNotes: () => {},
+  },
+  toggleFavorite: () => {}
 });
 
 export default function GlobalContextProvider({
@@ -166,6 +176,7 @@ export default function GlobalContextProvider({
   const [selectedNote, setSelectedNote] = useState<SingleNoteType | null>(null);
   const [isNewNote, setIsNewNote] = useState(false);
   const [selectedTags, setSelectedTags] = useState<SingleTagType[]>([]);
+  const [favoriteNotes, setFavoriteNotes] = useState<SingleNoteType[]>([]);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -274,6 +285,14 @@ export default function GlobalContextProvider({
     updateAllNotes();
   }, []);
 
+  const toggleFavorite = (id: string): void => {
+    setAllNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note._id === id ? { ...note, isFavorite: !note.isFavorite } : note
+      )
+    );
+  };
+  
   useEffect(() => {
     setSelectedTags(
       (selectedNote?.tags || []).map((tag) => ({ _id: uuidv4(), name: tag }))
@@ -296,6 +315,8 @@ export default function GlobalContextProvider({
         isNewNoteObject: { isNewNote, setIsNewNote },
         allTagsObject: { allTags, setAllTags },
         selectedTagsObject: { selectedTags, setSelectedTags },
+        favoriteNotesObject: { favoriteNotes, setFavoriteNotes },
+        toggleFavorite,
       }}
     >
       {children}

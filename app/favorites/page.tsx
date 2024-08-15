@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { ThumbsUp } from "lucide-react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,22 +14,30 @@ interface CodeBlockProps {
   code: string;
 }
 
-function AllNotesSection() {
+function FavoriteNotesPage() {
   const {
     allNotesObject: { allNotes },
+    favoriteNotesObject: { favoriteNotes },
   } = useGlobalContext();
+
+  const filteredNotes = allNotes.filter((note) => note.isFavorite);
+
   return (
     <div className="mt-5 flex flex-wrap gap-4 ">
-      {allNotes.map((note, index) => (
-        <div key={index}>
-          <SingleNote note={note}></SingleNote>
-        </div>
-      ))}
+      {filteredNotes.length === 0 ? (
+        <p>No favorite notes yet.</p>
+      ) : (
+        filteredNotes.map((note, index) => (
+          <div key={index}>
+            <SingleNote note={note} />
+          </div>
+        ))
+      )}
     </div>
   );
 }
 
-export default AllNotesSection;
+export default FavoriteNotesPage;
 
 function SingleNote({ note }: { note: SingleNoteType }) {
   const {
@@ -68,7 +77,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
       <NoteTags tags={tags ?? []} />
       <NoteDescription description={description ?? "No description"} />
       <Code language={language ?? "Not Selected"} code={code ?? ""} />
-      <NoteFooter language={language ?? "Not Selectedк"} />
+      <NoteFooter language={language ?? "Not Selected"} />
     </div>
   );
 }
@@ -90,8 +99,6 @@ function NoteHeader({
     favoriteNotesObject: { favoriteNotes, setFavoriteNotes },
   } = useGlobalContext();
 
-  const { toggleFavorite } = useGlobalContext();
-
   const handleFavoriteToggle = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevents opening the note when clicking the favorite icon
     if (isFavorite) {
@@ -100,7 +107,6 @@ function NoteHeader({
         favoriteNotes.filter((favNote) => favNote._id !== note._id)
       );
     } else {
-      // Add to favorites
       setFavoriteNotes([...favoriteNotes, { ...note, isFavorite: true }]);
     }
   };
@@ -113,18 +119,14 @@ function NoteHeader({
       >
         {title}
       </span>
-      <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
+      <Button>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          fill={isFavorite ? "red" : "none"} 
+          fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="size-6 cursor-pointer text-red-900"
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite(note._id);
-          }}
+          className="size-6 cursor-pointer text-slate-600"
         >
           <path
             strokeLinecap="round"
