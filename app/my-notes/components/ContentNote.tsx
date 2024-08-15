@@ -560,16 +560,48 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
   setIsNewNote,
   setOpenContentNote,
 }) => {
-  const handleConfirm = useCallback(() => {
-    if (singleNote && singleNote.title.trim() !== "") {
-      const newNote = { ...singleNote };
+  const { toast } = useToast();
 
-      setAllNotes((prevNotes) => [...prevNotes, newNote]);
-      setSingleNote(null);
-      setIsNewNote(false);
-      setOpenContentNote(false);
+  const handleConfirm = useCallback(async () => {
+    if (singleNote && singleNote.title.trim() !== "") {
+      try {
+        const response = await fetch("/api/notes/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(singleNote),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save note");
+        }
+
+        const updatedNote = await response.json();
+
+        setAllNotes((prevNotes) =>
+          prevNotes.some((note) => note._id === updatedNote._id)
+            ? prevNotes.map((note) =>
+                note._id === updatedNote._id ? updatedNote : note
+              )
+            : [...prevNotes, updatedNote]
+        );
+        setSingleNote(null);
+        setIsNewNote(false);
+        setOpenContentNote(false);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to save note",
+          variant: "destructive",
+        });
+      }
     } else {
-      alert("You can't create a code snippet without a title!");
+      toast({
+        title: "Warning",
+        description: "Note must have a title",
+        variant: "destructive",
+      });
     }
   }, [
     singleNote,
@@ -577,30 +609,12 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
     setSingleNote,
     setIsNewNote,
     setOpenContentNote,
+    toast,
   ]);
 
-  const handleCancel = () => {
-    setSingleNote(null);
-    setIsNewNote(false);
-    setOpenContentNote(false);
-  };
-
   return (
-    <div className="confirm-note py-5 rounded-[6px] transition-all">
-      <div className="flex flex-col gap-2">
-        <Button
-          onClick={handleConfirm}
-          className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800"
-        >
-          Confirm
-        </Button>
-        <Button
-          onClick={handleCancel}
-          className="w-full bg-none  text-blue-900  border  py-2 rounded hover:text-gray-500 hover:bg-slate-50"
-        >
-          Cancel
-        </Button>
-      </div>
-    </div>
+    <Button onClick={handleConfirm} className="mt-6">
+      Confirm
+    </Button>
   );
 };
