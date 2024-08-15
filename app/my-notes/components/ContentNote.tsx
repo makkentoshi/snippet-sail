@@ -564,6 +564,7 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
 
   const handleConfirm = useCallback(async () => {
     if (singleNote && singleNote.title.trim() !== "") {
+      console.log(singleNote);
       try {
         const response = await fetch("/api/notes/save", {
           method: "POST",
@@ -613,8 +614,19 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
   ]);
 
   return (
-    <Button onClick={handleConfirm} className="mt-6">
-      Confirm
-    </Button>
+    <div className="flex flex-col transition-all">
+      <Button
+        onClick={handleConfirm}
+        className="mt-6 bg-blue-900 text-white rounded-[8px] hover:bg-blue-800 "
+      >
+        Confirm
+      </Button>
+      <Button
+        onClick={() => {}}
+        className="mt-3 border rounded-[8px] hover:bg-gray-100 hover:text-slate-500"
+      >
+        Cancel
+      </Button>
+    </div>
   );
 };

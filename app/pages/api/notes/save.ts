@@ -20,10 +20,11 @@ export default async function handler(
 
     try {
       await connect();
+      console.log("Connected");
       const note = await Note.findByIdAndUpdate(
         _id,
         { title, tags, isFavorite, description, code, language, creationDate },
-        { new: true, upsert: true } 
+        { new: true, upsert: true }
       );
       res.status(200).json(note);
     } catch (error) {
