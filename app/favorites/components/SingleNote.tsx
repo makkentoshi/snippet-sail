@@ -1,42 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { ThumbsUp } from "lucide-react";
+import { SingleNoteType } from "@/app/Types";
+import { Button } from "@/components/ui/button";
+import { useGlobalContext } from "@/ContextApi";
 import DeleteIcon from "@mui/icons-material/Delete";
 import JavascriptIcon from "@mui/icons-material/Javascript";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { useGlobalContext } from "@/ContextApi";
-import { SingleNoteType } from "@/app/Types";
 import { vs } from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import { Button } from "@/components/ui/button";
-import { fetchNotes } from "@/app/lib/api";
-import { useNotes } from "@/app/lib/hooks/useNotes";
-
-interface CodeBlockProps {
-  language: string;
-  code: string;
-}
-
-function AllNotesSection() {
-  const { notes, loading, error } = useNotes();
-  const {
-    allNotesObject: { allNotes, setAllNotes },
-  } = useGlobalContext();
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
-  return (
-    <div className="mt-5 flex flex-wrap gap-4 ">
-      {notes.map((note) => (
-        <div key={note._id}>
-          <SingleNote note={note} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export default AllNotesSection;
 
 function SingleNote({ note }: { note: SingleNoteType }) {
   const {
@@ -185,6 +154,11 @@ function NoteDescription({ description }: { description: string }) {
   );
 }
 
+interface CodeBlockProps {
+  language: string;
+  code: string;
+}
+
 const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   return (
     <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
@@ -209,3 +183,5 @@ function NoteFooter({ language }: { language: string }) {
     </div>
   );
 }
+
+export default SingleNote;
