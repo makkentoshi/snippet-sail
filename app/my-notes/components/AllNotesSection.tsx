@@ -76,35 +76,26 @@ function SingleNote({ note }: { note: SingleNoteType }) {
       <NoteTags tags={tags ?? []} />
       <NoteDescription description={description ?? "No description"} />
       <Code language={language ?? "Not Selected"} code={code ?? ""} />
-      <NoteFooter language={language ?? "Not Selectedк"} />
+      <NoteFooter language={language ?? "Not Selected"} />
     </div>
   );
 }
 
-function NoteHeader({
-  title,
-  isFavorite,
-  note,
-  _id,
-}: {
-  title: string;
-  isFavorite: boolean;
-  note: SingleNoteType;
-  _id: string;
-}) {
+function NoteHeader({ note }: { note: SingleNoteType }) {
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
     favoriteNotesObject: { favoriteNotes, setFavoriteNotes },
   } = useGlobalContext();
 
+  const { title, isFavorite, _id } = note;
   const { toggleFavorite } = useGlobalContext();
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation(); 
-  
+    e.stopPropagation();
+
     const updatedNote = { ...note, isFavorite: !isFavorite };
-  
+
     try {
       await fetch(`/api/notes/${_id}`, {
         method: "PUT",
@@ -113,9 +104,8 @@ function NoteHeader({
         },
         body: JSON.stringify(updatedNote),
       });
-  
-    
-      toggleFavorite(_id); 
+
+      toggleFavorite(_id);
     } catch (error) {
       console.error("Failed to update favorite status", error);
     }
@@ -125,7 +115,10 @@ function NoteHeader({
     <div className="flex justify-between mx-4">
       <span
         className="font-bold text-lg w-[87%] cursor-pointer hover:text-blue-900"
-        onClick={() => setOpenContentNote(true)}
+        onClick={() => {
+          setSelectedNote(note);
+          setOpenContentNote(true);
+        }}
       >
         {title}
       </span>
