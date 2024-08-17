@@ -59,7 +59,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     isFavorite = false,
     language,
     _id,
-    creatorId 
+    creatorId,
   } = note;
 
   return (
@@ -77,7 +77,11 @@ function SingleNote({ note }: { note: SingleNoteType }) {
       <NoteTags tags={tags ?? []} />
       <NoteDescription description={description ?? "No description"} />
       <Code language={language ?? "Not Selected"} code={code ?? ""} />
-      <NoteFooter language={language ?? "Not Selected"} creatorId={creatorId} _id={_id} />
+      <NoteFooter
+        language={language ?? "Not Selected"}
+        creatorId={creatorId}
+        _id={_id}
+      />
     </div>
   );
 }
@@ -87,11 +91,13 @@ function NoteHeader({
   isFavorite,
   note,
   _id,
+  id,
 }: {
   title: string;
   isFavorite: boolean;
   note: SingleNoteType;
   _id: string;
+  id: string;
 }) {
   const {
     openContentNoteObject: { setOpenContentNote },
@@ -107,7 +113,7 @@ function NoteHeader({
     const updatedNote = { ...note, isFavorite: !isFavorite };
 
     try {
-      await fetch(`/api/notes/${_id}`, {
+      await fetch(`/api/notes/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +121,7 @@ function NoteHeader({
         body: JSON.stringify(updatedNote),
       });
 
-      toggleFavorite(_id);
+      toggleFavorite(id);
     } catch (error) {
       console.error("Failed to update favorite status", error);
     }

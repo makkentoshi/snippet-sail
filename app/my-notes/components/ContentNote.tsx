@@ -80,34 +80,41 @@ const ContentNote = () => {
     }
   }, [singleNote, allNotes, setAllNotes, isNewNote]);
 
-  const handleSaveNewNote = () => {
+  const handleSaveNewNote = useCallback(() => {
     if (isNewNote && singleNote?.title) {
       setAllNotes((prevNotes) => [...prevNotes, singleNote]);
       setIsNewNote(false);
       setOpenContentNote(false);
     }
-  };
-  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setSingleNote((prevNote) =>
-      prevNote ? { ...prevNote, title: e.target.value } : null
-    );
-  };
+  }, [isNewNote, singleNote, setAllNotes, setIsNewNote, setOpenContentNote]);
 
-  const handleTagToggle = (tag: SingleTagType) => {
-    const newTags = selectedTags.some((t) => t.name === tag.name)
-      ? selectedTags.filter((t) => t.name !== tag.name)
-      : [...selectedTags, tag];
+  const handleTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setSingleNote((prevNote) =>
+        prevNote ? { ...prevNote, title: e.target.value } : null
+      );
+    },
+    []
+  );
 
-    setSelectedTags(newTags);
-    setSingleNote((prevNote) =>
-      prevNote ? { ...prevNote, tags: newTags.map((t) => t.name) } : null
-    );
-  };
+  const handleTagToggle = useCallback(
+    (tag: SingleTagType) => {
+      const newTags = selectedTags.some((t) => t.name === tag.name)
+        ? selectedTags.filter((t) => t.name !== tag.name)
+        : [...selectedTags, tag];
 
-  const handleClose = () => {
+      setSelectedTags(newTags);
+      setSingleNote((prevNote) =>
+        prevNote ? { ...prevNote, tags: newTags.map((t) => t.name) } : null
+      );
+    },
+    [selectedTags, setSelectedTags]
+  );
+
+  const handleClose = useCallback(() => {
     handleSaveNewNote();
     setOpenContentNote(false);
-  };
+  }, [handleSaveNewNote, setOpenContentNote]);
 
   return (
     <div
