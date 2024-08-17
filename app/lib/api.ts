@@ -35,6 +35,20 @@ export async function updateNote(
     body: JSON.stringify(updatedNote),
   });
 
+
+  const deleteNote = async (id: string) => {
+    const response = await fetch(`/api/notes/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to delete note');
+    }
+  };
+
   if (!response.ok) {
     throw new Error("Failed to update note");
   }

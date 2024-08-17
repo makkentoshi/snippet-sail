@@ -91,13 +91,13 @@ function NoteHeader({
   isFavorite,
   note,
   _id,
-  id,
+  
 }: {
   title: string;
   isFavorite: boolean;
   note: SingleNoteType;
   _id: string;
-  id: string;
+ 
 }) {
   const {
     openContentNoteObject: { setOpenContentNote },
@@ -113,7 +113,7 @@ function NoteHeader({
     const updatedNote = { ...note, isFavorite: !isFavorite };
 
     try {
-      await fetch(`/api/notes/${id}`, {
+      await fetch(`/api/notes/${_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ function NoteHeader({
         body: JSON.stringify(updatedNote),
       });
 
-      toggleFavorite(id);
+      toggleFavorite(_id);
     } catch (error) {
       console.error("Failed to update favorite status", error);
     }
