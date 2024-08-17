@@ -202,7 +202,7 @@ export default function GlobalContextProvider({
 
       setTimeout(() => {
         setAllNotes(allNotes);
-      }, 1200);
+      }, 200);
     }
     function updateAllTags() {
       const allTags = [
