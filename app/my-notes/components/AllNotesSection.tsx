@@ -81,14 +81,23 @@ function SingleNote({ note }: { note: SingleNoteType }) {
   );
 }
 
-function NoteHeader({ note }: { note: SingleNoteType }) {
+function NoteHeader({
+  title,
+  isFavorite,
+  note,
+  _id,
+}: {
+  title: string;
+  isFavorite: boolean;
+  note: SingleNoteType;
+  _id: string;
+}) {
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
     favoriteNotesObject: { favoriteNotes, setFavoriteNotes },
   } = useGlobalContext();
 
-  const { title, isFavorite, _id } = note;
   const { toggleFavorite } = useGlobalContext();
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
@@ -115,10 +124,7 @@ function NoteHeader({ note }: { note: SingleNoteType }) {
     <div className="flex justify-between mx-4">
       <span
         className="font-bold text-lg w-[87%] cursor-pointer hover:text-blue-900"
-        onClick={() => {
-          setSelectedNote(note);
-          setOpenContentNote(true);
-        }}
+        onClick={() => setOpenContentNote(true)}
       >
         {title}
       </span>
