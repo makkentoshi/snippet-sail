@@ -70,7 +70,7 @@ function NoteHeader({
   const { toggleFavorite } = useGlobalContext();
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevents opening the note when clicking the favorite icon
+    e.stopPropagation();
 
     const updatedNote = { ...note, isFavorite: !isFavorite };
 

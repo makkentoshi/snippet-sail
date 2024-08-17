@@ -101,10 +101,10 @@ function NoteHeader({
   const { toggleFavorite } = useGlobalContext();
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevents opening the note when clicking the favorite icon
-
+    e.stopPropagation(); 
+  
     const updatedNote = { ...note, isFavorite: !isFavorite };
-
+  
     try {
       await fetch(`/api/notes/${_id}`, {
         method: "PUT",
@@ -113,15 +113,9 @@ function NoteHeader({
         },
         body: JSON.stringify(updatedNote),
       });
-
-      // Update the context state
-      if (isFavorite) {
-        setFavoriteNotes(
-          favoriteNotes.filter((favNote) => favNote._id !== _id)
-        );
-      } else {
-        setFavoriteNotes([...favoriteNotes, updatedNote]);
-      }
+  
+    
+      toggleFavorite(_id); 
     } catch (error) {
       console.error("Failed to update favorite status", error);
     }
@@ -145,7 +139,7 @@ function NoteHeader({
           className="size-6 cursor-pointer text-red-900"
           onClick={(e) => {
             e.stopPropagation();
-            toggleFavorite(note._id);
+            handleFavoriteToggle(e);
           }}
         >
           <path

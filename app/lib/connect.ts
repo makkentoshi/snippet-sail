@@ -3,14 +3,22 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+let isConnected = false;
+
 async function connect() {
   const mongoURL = process.env.MONGODB_URI;
 
-
-if (mongoose.connections[0].readyState) {
-    console.log('Already connected.');
+  if (isConnected) {
+    console.log("Already connected.");
     return;
   }
+
+  if (mongoose.connections[0].readyState) {
+    isConnected = true;
+    console.log("MongoDB is already connected.");
+    return;
+  }
+
   if (!mongoURL) {
     throw new Error(
       "Please define the MONGODB_URI environment variable inside .env.local"
