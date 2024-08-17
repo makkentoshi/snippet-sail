@@ -1,29 +1,45 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import connect from "@/app/lib/connect";
-import NoteModel from "@/app/Models/NoteSchema";
+import Note from "@/app/Models/NoteSchema";
+import { getAuth } from "@clerk/nextjs/server";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await connect();
   const { id } = req.query;
+  const { userId } = getAuth(req);
 
   if (req.method === "PUT") {
-    try {
-      await connect();
-      const result = await NoteModel.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
-      if (result) {
-        res.status(200).json(result);
-      } else {
-        res.status(404).json({ message: "Note not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Failed to update note" });
+    const note = await Note.findById(id);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
     }
-  } else {
-    res.setHeader("Allow", ["PUT"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    if (note.creatorId !== userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const updatedNote = await Note.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    return res.status(200).json(updatedNote);
   }
+
+  if (req.method === "DELETE") {
+    const note = await Note.findById(id);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+
+    if (note.creatorId !== userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    await Note.findByIdAndDelete(id);
+    return res.status(204).end();
+  }
+
+  return res.status(405).json({ message: "Method not allowed" });
 }

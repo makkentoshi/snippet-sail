@@ -9,6 +9,7 @@ interface INote extends Document {
   description?: string;
   language?: string;
   creationDate: string;
+  creatorId: string;
 }
 
 const NoteSchema: Schema = new Schema({
@@ -20,6 +21,7 @@ const NoteSchema: Schema = new Schema({
   code: { type: String, default: "Sorry, this snippet has no code" },
   language: { type: String, default: "" },
   creationDate: { type: String, default: new Date().toISOString() },
+  creatorId: { type: String, required: true },
 });
 
 export default mongoose.models.Note ||

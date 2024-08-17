@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { ThumbsUp } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import JavascriptIcon from "@mui/icons-material/Javascript";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -188,17 +188,42 @@ const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   );
 };
 
-function NoteFooter({ language }: { language: string }) {
+function NoteFooter({
+  language,
+  creatorId,
+  _id,
+}: {
+  language: string;
+  creatorId: string;
+  _id: string;
+}) {
+  const { user } = useUser();
+  const userId = user?.id;
+
+  const handleDelete = async () => {
+    try {
+      await fetch(`/api/notes/${_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Failed to delete note", error);
+    }
+  };
+
   return (
     <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
       <div className="flex gap-1 items-center">
-        <JavascriptIcon
-          fontSize={"medium"}
-          className="mb-[2px]"
-        ></JavascriptIcon>
+        <JavascriptIcon fontSize={"medium"} className="mb-[2px]" />
         <span>{language}</span>
       </div>
-      <DeleteIcon fontSize={"medium"} className="cursor-pointer"></DeleteIcon>
+      {userId === creatorId && (
+        <Button onClick={handleDelete}>
+          <DeleteIcon fontSize={"medium"} className="cursor-pointer" />
+        </Button>
+      )}
     </div>
   );
 }
