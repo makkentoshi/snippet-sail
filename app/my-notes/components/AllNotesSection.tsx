@@ -91,13 +91,11 @@ function NoteHeader({
   isFavorite,
   note,
   _id,
-  
 }: {
   title: string;
   isFavorite: boolean;
   note: SingleNoteType;
   _id: string;
- 
 }) {
   const {
     openContentNoteObject: { setOpenContentNote },
@@ -187,7 +185,7 @@ function NoteDescription({ description }: { description: string }) {
 
 const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   return (
-    <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
+    <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4 overflow-y-auto max-h-[500px]">
       <SyntaxHighlighter language={language} style={vs}>
         {code}
       </SyntaxHighlighter>
@@ -208,6 +206,7 @@ function NoteFooter({
   const userId = user?.id;
 
   const handleDelete = async () => {
+    if (!userId) return;
     try {
       await fetch(`/api/notes/${_id}`, {
         method: "DELETE",
