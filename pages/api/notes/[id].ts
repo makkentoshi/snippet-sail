@@ -17,6 +17,17 @@ export default async function handler(
       return res.status(404).json({ message: "Note not found" });
     }
 
+    const isFavoriteOnlyUpdate = Object.keys(req.body).every(
+      (key) => key === "isFavorite"
+    );
+
+    if (isFavoriteOnlyUpdate) {
+      const updatedNote = await Note.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      return res.status(200).json(updatedNote);
+    }
+
     if (note.creatorId !== userId) {
       return res.status(403).json({ message: "Not authorized" });
     }
