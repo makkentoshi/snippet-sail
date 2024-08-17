@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import LightMode from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { SingleNoteType, SingleTagType } from "./app/Types";
+import { useUser } from "@clerk/nextjs";
 
 interface SideBarMenu {
   id: number;
@@ -118,7 +119,7 @@ const ContextProvider = createContext<GlobalContextType>({
     favoriteNotes: [],
     setFavoriteNotes: () => {},
   },
-  toggleFavorite: () => {}
+  toggleFavorite: () => {},
 });
 
 export default function GlobalContextProvider({
@@ -168,6 +169,9 @@ export default function GlobalContextProvider({
     },
   ]);
 
+  const { user } = useUser();
+  const creatorId = user?.id;
+
   const [openSideBar, setOpenSideBar] = useState(false);
   const [openContentNote, setOpenContentNote] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -194,71 +198,7 @@ export default function GlobalContextProvider({
 
   useEffect(() => {
     function updateAllNotes() {
-      const allNotes = [
-        {
-          _id: "1",
-          title: "This is a note",
-          isFavorite: false,
-          tags: ["tag1", "tag2"],
-          description: "This is a note 1",
-          code: `function SingleNote() {
-            return (
-              <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
-                <NoteHeader></NoteHeader>
-                <NoteDate></NoteDate>
-                <NoteTags></NoteTags>
-                <NoteDescription></NoteDescription>
-                <Code language="javascript"></Code>
-                <NoteFooter></NoteFooter>
-              </div>
-            );
-          }`,
-          language: "javascript",
-          creationDate: "2022-02-01",
-        },
-        {
-          _id: "2",
-          title: "This is a note",
-          isFavorite: false,
-          tags: ["tag1", "tag2"],
-          description: "This is a note 2",
-          code: `function SingleNote() {
-            return (
-              <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
-                <NoteHeader></NoteHeader>
-                <NoteDate></NoteDate>
-                <NoteTags></NoteTags>
-                <NoteDescription></NoteDescription>
-                <Code language="javascript"></Code>
-                <NoteFooter></NoteFooter>
-              </div>
-            );
-          }`,
-          language: "javascript",
-          creationDate: "2022-02-01",
-        },
-        {
-          _id: "3",
-          title: "This is a note 3",
-          isFavorite: false,
-          tags: ["tag1", "tag2"],
-          description: "This is a note",
-          code: `function SingleNote() {
-            return (
-              <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[320px] py-4 bg-white shadow-md">
-                <NoteHeader></NoteHeader>
-                <NoteDate></NoteDate>
-                <NoteTags></NoteTags>
-                <NoteDescription></NoteDescription>
-                <Code language="javascript"></Code>
-                <NoteFooter></NoteFooter>
-              </div>
-            );
-          }`,
-          language: "javascript",
-          creationDate: "2022-02-01",
-        },
-      ];
+      if (!creatorId) return;
 
       setTimeout(() => {
         setAllNotes(allNotes);
@@ -292,7 +232,7 @@ export default function GlobalContextProvider({
       )
     );
   };
-  
+
   useEffect(() => {
     setSelectedTags(
       (selectedNote?.tags || []).map((tag) => ({ _id: uuidv4(), name: tag }))

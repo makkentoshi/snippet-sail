@@ -17,6 +17,7 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Toaster } from "@/components/ui/toaster";
 import MonacoEditor from "@monaco-editor/react";
+import { useUser } from "@clerk/nextjs";
 
 const ContentNote = () => {
   const {
@@ -29,6 +30,10 @@ const ContentNote = () => {
 
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [singleNote, setSingleNote] = useState<SingleNoteType | null>(null);
+
+  const { user } = useUser();
+  const userId = user?.id ?? "unknown";
+  const creatorId = userId;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -50,6 +55,7 @@ const ContentNote = () => {
         code: "",
         language: "",
         creationDate: new Date().toISOString(),
+        creatorId: creatorId,
       };
 
       setSingleNote(newNote);
@@ -500,6 +506,8 @@ interface LanguageOption {
 const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
   const [selectedLanguage, setSelectedLanguage] =
     useState<LanguageOption | null>(null);
+  const { user } = useUser();
+  const creatorId = user?.id ?? "unknown";
 
   const handleLanguageChange = (option: LanguageOption | null) => {
     setSelectedLanguage(option);
@@ -523,6 +531,12 @@ const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
           _id: uuidv4(),
           code: value || "",
           title: "Unknown Title",
+          isFavorite: false,
+          tags: [],
+          description: "",
+          language: "",
+          creationDate: new Date().toISOString(),
+          creatorId: creatorId,
         };
       }
     });

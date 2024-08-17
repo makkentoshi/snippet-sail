@@ -59,6 +59,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     isFavorite = false,
     language,
     _id,
+    creatorId 
   } = note;
 
   return (
@@ -76,7 +77,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
       <NoteTags tags={tags ?? []} />
       <NoteDescription description={description ?? "No description"} />
       <Code language={language ?? "Not Selected"} code={code ?? ""} />
-      <NoteFooter language={language ?? "Not Selected"} />
+      <NoteFooter language={language ?? "Not Selected"} creatorId={creatorId} _id={_id} />
     </div>
   );
 }
