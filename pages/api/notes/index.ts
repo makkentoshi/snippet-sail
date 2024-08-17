@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import connect from "../../../lib/connect";
-import Note from "../../../Models/NoteSchema";
+import connect from "@/app/lib/connect";
+import Note from "@/app/Models/NoteSchema";
 
 export default async function handler(
   req: NextApiRequest,
