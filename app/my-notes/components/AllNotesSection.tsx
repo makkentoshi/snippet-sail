@@ -10,6 +10,18 @@ import { vs } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import { Button } from "@/components/ui/button";
 import { fetchNotes } from "@/app/lib/api";
 import { useNotes } from "@/app/lib/hooks/useNotes";
+import { useRouter } from "next/router";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface CodeBlockProps {
   language: string;
@@ -201,6 +213,8 @@ function NoteFooter({
 }) {
   const { user } = useUser();
   const userId = user?.id;
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
     if (!userId) return;
@@ -211,25 +225,51 @@ function NoteFooter({
           "Content-Type": "application/json",
         },
       });
+      setIsOpen(false);
+      router.reload();
     } catch (error) {
       console.error("Failed to delete note", error);
     }
   };
 
   return (
-    <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
-      <div className="flex gap-1 items-center">
-        <JavascriptIcon fontSize={"medium"} className="mb-[2px]" />
-        <span>{language}</span>
-      </div>
-      {userId === creatorId && (
-        <Button
-          onClick={handleDelete}
-          className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all"
-        >
-          <DeleteIcon fontSize={"medium"} className=" " />
-        </Button>
-      )}
-    </div>
+    <>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
+          <div className="flex gap-1 items-center">
+            <JavascriptIcon fontSize={"medium"} className="mb-[2px]" />
+            <span>{language}</span>
+          </div>
+          {userId === creatorId && (
+            <>
+              <AlertDialogTrigger asChild>
+                <Button
+                  onClick={handleDelete}
+                  className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all"
+                >
+                  <DeleteIcon fontSize={"medium"} className=" " />
+                </Button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your post.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete}>
+                    Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </>
+          )}
+        </div>
+      </AlertDialog>
+    </>
   );
 }
