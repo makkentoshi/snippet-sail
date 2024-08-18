@@ -518,7 +518,7 @@ const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
   const [selectedLanguage, setSelectedLanguage] =
     useState<LanguageOption | null>(null);
   const { user } = useUser();
-  const creatorId = user?.id ?? "unknown";
+  const userId = user?.id ?? "unknown";
 
   const handleLanguageChange = (option: LanguageOption | null) => {
     setSelectedLanguage(option);
@@ -547,7 +547,7 @@ const NoteCode: React.FC<NoteCodeProps> = ({ singleNote, setSingleNote }) => {
           description: "",
           language: "",
           creationDate: new Date().toISOString(),
-          creatorId: creatorId,
+          creatorId: userId,
         };
       }
     });
