@@ -25,12 +25,22 @@ export default async function handler(
       code,
       language,
       creationDate,
+      creatorId,
     } = req.body;
 
     try {
       const note = await Note.findByIdAndUpdate(
         _id,
-        { title, tags, isFavorite, description, code, language, creationDate },
+        {
+          title,
+          tags,
+          isFavorite,
+          description,
+          code,
+          language,
+          creationDate,
+          creatorId,
+        },
         { new: true, upsert: true }
       );
       res.status(200).json(note);

@@ -258,24 +258,24 @@ function ContentNoteHeader({
     setAllNotes(newAllNotes);
   }
   const { toast } = useToast();
-  const handlePostNote = useCallback(() => {
-    if (singleNote && singleNote.title.trim() !== "") {
-      const newNote = { ...singleNote };
+  // const handlePostNote = useCallback(() => {
+  //   if (singleNote && singleNote.title.trim() !== "") {
+  //     const newNote = { ...singleNote };
 
-      setAllNotes((prevNotes) => [...prevNotes, newNote]);
-      setSingleNote(null);
-      setIsNewNote(false);
-      setOpenContentNote(false);
-    } else {
-      alert("You can't create a snippet without a title");
-    }
-  }, [
-    singleNote,
-    setAllNotes,
-    setSingleNote,
-    setIsNewNote,
-    setOpenContentNote,
-  ]);
+  //     setAllNotes((prevNotes) => [...prevNotes, newNote]);
+  //     setSingleNote(null);
+  //     setIsNewNote(false);
+  //     setOpenContentNote(false);
+  //   } else {
+  //     alert("You can't create a snippet without a title");
+  //   }
+  // }, [
+  //   singleNote,
+  //   setAllNotes,
+  //   setSingleNote,
+  //   setIsNewNote,
+  //   setOpenContentNote,
+  // ]);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter") {
