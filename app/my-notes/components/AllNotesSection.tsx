@@ -235,7 +235,7 @@ function NoteFooter({
             </Button>
           </AlertDialogTrigger>
 
-          <AlertDialogContent className="bg-white">
+          <AlertDialogContent className="bg-white rounded-[15px]">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
@@ -244,8 +244,10 @@ function NoteFooter({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>
+              <AlertDialogCancel className="rounded-[8px]">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete} className="">
                 Confirm
               </AlertDialogAction>
             </AlertDialogFooter>

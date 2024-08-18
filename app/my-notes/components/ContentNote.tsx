@@ -7,7 +7,6 @@ import React, { LabelHTMLAttributes, useEffect, useRef, useState } from "react";
 import { CheckOutlined, TagsOutlined } from "@ant-design/icons";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
-import { useToast } from "@/components/ui/use-toast";
 import { Select } from "antd";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
@@ -18,6 +17,18 @@ import {
 import { Toaster } from "@/components/ui/toaster";
 import MonacoEditor from "@monaco-editor/react";
 import { useUser } from "@clerk/nextjs";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const ContentNote = () => {
   const {
@@ -586,10 +597,10 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
   setOpenContentNote,
 }) => {
   const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleConfirm = useCallback(async () => {
     if (singleNote && singleNote.title.trim() !== "") {
-      console.log(singleNote.creatorId);
       try {
         const response = await fetch("/api/notes", {
           method: "POST",
@@ -615,17 +626,22 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
         setSingleNote(null);
         setIsNewNote(false);
         setOpenContentNote(false);
+
+        toast({
+          title: "Success",
+          description: "Post created successfully.",
+        });
       } catch (error) {
         toast({
           title: "Error",
-          description: "Failed to save note",
+          description: "Failed to save post.",
           variant: "destructive",
         });
       }
     } else {
       toast({
         title: "Warning",
-        description: "Note must have a title",
+        description: "Post must have a title.",
         variant: "destructive",
       });
     }
@@ -640,14 +656,39 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
 
   return (
     <div className="flex flex-col transition-all">
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <Button className="mt-6 bg-blue-900 text-white rounded-[8px] hover:bg-blue-800">
+            Confirm
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to create the post?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              No
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setIsDialogOpen(false);
+                handleConfirm();
+              }}
+            >
+              Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <Button
-        onClick={handleConfirm}
-        className="mt-6 bg-blue-900 text-white rounded-[8px] hover:bg-blue-800 "
-      >
-        Confirm
-      </Button>
-      <Button
-        onClick={() => {}}
+        onClick={() => setOpenContentNote(false)}
         className="mt-3 border rounded-[8px] hover:bg-gray-100 hover:text-slate-500"
       >
         Cancel
