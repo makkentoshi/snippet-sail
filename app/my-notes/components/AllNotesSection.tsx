@@ -45,11 +45,6 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     favoriteNotesObject: { favoriteNotes, setFavoriteNotes },
   } = useGlobalContext();
 
-  const handleClick = () => {
-    setSelectedNote(note);
-    setOpenContentNote(true);
-  };
-
   const {
     title,
     creationDate,
@@ -63,10 +58,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
   } = note;
 
   return (
-    <div
-      onClick={handleClick}
-      className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer"
-    >
+    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md">
       <NoteHeader
         title={title ?? "Untitled"}
         isFavorite={isFavorite ?? false}
@@ -125,11 +117,16 @@ function NoteHeader({
     }
   };
 
+  const handleClick = () => {
+    setSelectedNote(note);
+    setOpenContentNote(true);
+  };
+
   return (
     <div className="flex justify-between mx-4">
       <span
         className="font-bold text-lg w-[87%] cursor-pointer hover:text-blue-900"
-        onClick={() => setOpenContentNote(true)}
+        onClick={handleClick}
       >
         {title}
       </span>
