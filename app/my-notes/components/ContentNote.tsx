@@ -59,10 +59,10 @@ const ContentNote = () => {
       };
 
       setSingleNote(newNote);
-
       setSelectedTags([]);
     } else if (selectedNote) {
       const noteToEdit = { ...selectedNote };
+      noteToEdit.creatorId = selectedNote.creatorId || creatorId;
       setSingleNote(noteToEdit);
 
       setSelectedTags(
@@ -70,6 +70,10 @@ const ContentNote = () => {
       );
     }
   }, [openContentNote, isNewNote, selectedNote, setSelectedTags]);
+
+  useEffect(() => {
+    console.log("User ID:", userId);
+  }, [userId]);
 
   useEffect(() => {
     if (singleNote && !isNewNote) {
