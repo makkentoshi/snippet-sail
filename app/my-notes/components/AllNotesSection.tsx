@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -8,7 +9,6 @@ import { useGlobalContext } from "@/ContextApi";
 import { SingleNoteType } from "@/app/Types";
 import { vs } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import { Button } from "@/components/ui/button";
-import { fetchNotes } from "@/app/lib/api";
 import { useNotes } from "@/app/lib/hooks/useNotes";
 import { useRouter } from "next/navigation";
 import {
@@ -30,19 +30,14 @@ interface CodeBlockProps {
 
 function AllNotesSection() {
   const { notes, loading, error } = useNotes();
-  const {
-    allNotesObject: { allNotes, setAllNotes },
-  } = useGlobalContext();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="mt-5 flex flex-wrap gap-4 ">
+    <div className="mt-5 flex flex-wrap gap-4">
       {notes.map((note) => (
-        <div key={note._id}>
-          <SingleNote note={note} />
-        </div>
+        <SingleNote key={note._id} note={note} />
       ))}
     </div>
   );
@@ -98,17 +93,15 @@ function NoteHeader({
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
-    favoriteNotesObject: { favoriteNotes, setFavoriteNotes },
+    toggleFavorite,
   } = useGlobalContext();
-
-  const { toggleFavorite } = useGlobalContext();
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    const updatedNote = { ...note, isFavorite: !isFavorite };
-
     try {
+      const updatedNote = { ...note, isFavorite: !isFavorite };
+
       await fetch(`/api/notes/${_id}`, {
         method: "PUT",
         headers: {
@@ -136,7 +129,10 @@ function NoteHeader({
       >
         {title}
       </span>
-      <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
+      <Button
+        className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all"
+        onClick={handleFavoriteToggle}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill={isFavorite ? "red" : "none"}
@@ -144,10 +140,6 @@ function NoteHeader({
           strokeWidth={1.5}
           stroke="currentColor"
           className="size-6 cursor-pointer text-red-800"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleFavoriteToggle(e);
-          }}
         >
           <path
             strokeLinecap="round"
@@ -163,16 +155,16 @@ function NoteHeader({
 function NoteDate({ creationDate }: { creationDate: string }) {
   return (
     <div className="text-slate-500 text-[11px] flex gap-1 font-light mx-4 mt-1">
-      <span className="">{creationDate}</span>
+      <span>{creationDate}</span>
     </div>
   );
 }
 
 function NoteTags({ tags }: { tags: string[] }) {
   return (
-    <div className=" text-white text-[11px] mx-4 flex-wrap flex gap-1 mt-4  ">
+    <div className="text-white text-[11px] mx-4 flex-wrap flex gap-1 mt-4">
       {tags.map((tag, index) => (
-        <span key={index} className="bg-[#31267a]  p-1 rounded-[7px] px-2">
+        <span key={index} className="bg-[#31267a] p-1 rounded-[7px] px-2">
           {tag}
         </span>
       ))}
@@ -212,6 +204,7 @@ function NoteFooter({
 
   const handleDelete = async () => {
     if (!userId) return;
+
     try {
       await fetch(`/api/notes/${_id}`, {
         method: "DELETE",
@@ -219,8 +212,8 @@ function NoteFooter({
           "Content-Type": "application/json",
         },
       });
-      setIsOpen(false);
 
+      setIsOpen(false);
       router.refresh();
       router.push("/my-notes");
     } catch (error) {
@@ -229,112 +222,36 @@ function NoteFooter({
   };
 
   return (
-    <>
-      <div className="flex inset-0 justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
-        <div className="flex gap-1 items-center">
-          <JavascriptIcon fontSize={"large"} className="" />
-          <span>{language}</span>
-        </div>
-        {userId === creatorId && (
-          <>
-            <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-              <AlertDialogTrigger asChild>
-                <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
-                  <DeleteIcon fontSize={"medium"} className=" " />
-                </Button>
-              </AlertDialogTrigger>
-
-              <AlertDialogContent className="bg-white">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your post.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete}>
-                    Confirm
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </>
-        )}
+    <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3">
+      <div className="flex gap-1 items-center">
+        <JavascriptIcon fontSize={"large"} />
+        <span>{language}</span>
       </div>
-    </>
-  );
-}
+      {userId === creatorId && (
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+          <AlertDialogTrigger asChild>
+            <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
+              <DeleteIcon fontSize={"medium"} />
+            </Button>
+          </AlertDialogTrigger>
 
-function SingleNoteDialog({
-  note,
-  setSelectedNote,
-  setOpenContentNote,
-}: {
-  note: SingleNoteType;
-  setSelectedNote: (note: SingleNoteType) => void;
-  setOpenContentNote: (open: boolean) => void;
-}) {
-  const { user } = useUser();
-
-  const userId = user?.id;
-  const router = useRouter();
-  const [isDialogOpen, setDialogOpen] = useState(false);
-
-  const handleEditClick = () => {
-    setDialogOpen(false);
-    setTimeout(() => {
-      router.push(`/notes/${note._id}`);
-    }, 300);
-  };
-
-  const handleClick = () => {
-    setSelectedNote(note);
-    setOpenContentNote(true);
-  };
-
-  const handleCopyClick = () => {
-    navigator.clipboard.writeText(note.code || "");
-    alert("Code copied to clipboard!");
-  };
-
-  return (
-    <>
-      <AlertDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialogTrigger asChild>
-          <div
-            className="rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer"
-            onClick={() => setDialogOpen(true)}
-          >
-            {/* Тут ваш контент для SingleNote */}
-            <div className="font-bold text-lg mx-4">{note.title}</div>
-            {/* Другие элементы SingleNote */}
-          </div>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="max-w-xl mx-auto">
-          <AlertDialogHeader>
-            <AlertDialogTitle>{note.title}</AlertDialogTitle>
-            <AlertDialogDescription>{note.description}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="mt-4 p-4 bg-gray-100 rounded-md">
-            <pre className="whitespace-pre-wrap">
-              <code>{note.code}</code>
-            </pre>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            {userId === note.creatorId && (
-              <AlertDialogAction onClick={handleEditClick}>
-                Edit
+          <AlertDialogContent className="bg-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                post.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>
+                Confirm
               </AlertDialogAction>
-            )}
-            <AlertDialogAction onClick={handleCopyClick}>
-              Copy
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </div>
   );
 }
