@@ -8,8 +8,8 @@ interface INote extends Document {
   tags?: string[];
   description?: string;
   language?: string;
-  creationDate: string;
   creatorId: string;
+  creationDate: string;
 }
 
 const NoteSchema: Schema = new Schema({
@@ -20,8 +20,8 @@ const NoteSchema: Schema = new Schema({
   description: { type: String, default: "" },
   code: { type: String, default: "Sorry, this snippet has no code" },
   language: { type: String, default: "" },
-  creationDate: { type: String, default: new Date().toISOString() },
   creatorId: { type: String, required: true },
+  creationDate: { type: String, default: new Date().toISOString() },
 });
 
 export default mongoose.models.Note ||

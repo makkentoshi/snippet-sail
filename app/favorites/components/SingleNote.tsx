@@ -2,10 +2,16 @@
 import { SingleNoteType } from "@/app/Types";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/ContextApi";
+import { useUser } from "@clerk/nextjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import JavascriptIcon from "@mui/icons-material/Javascript";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs } from "react-syntax-highlighter/dist/cjs/styles/hljs";
+
+interface CodeBlockProps {
+  language: string;
+  code: string;
+}
 
 function SingleNote({ note }: { note: SingleNoteType }) {
   const {
@@ -28,6 +34,7 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     isFavorite = false,
     language,
     _id,
+    creatorId,
   } = note;
 
   return (
@@ -45,7 +52,11 @@ function SingleNote({ note }: { note: SingleNoteType }) {
       <NoteTags tags={tags ?? []} />
       <NoteDescription description={description ?? "No description"} />
       <Code language={language ?? "Not Selected"} code={code ?? ""} />
-      <NoteFooter language={language ?? "Not Selectedк"} />
+      <NoteFooter
+        language={language ?? "Not Selected"}
+        creatorId={creatorId}
+        _id={_id}
+      />
     </div>
   );
 }
@@ -83,14 +94,7 @@ function NoteHeader({
         body: JSON.stringify(updatedNote),
       });
 
-      // Update the context state
-      if (isFavorite) {
-        setFavoriteNotes(
-          favoriteNotes.filter((favNote) => favNote._id !== _id)
-        );
-      } else {
-        setFavoriteNotes([...favoriteNotes, updatedNote]);
-      }
+      toggleFavorite(_id);
     } catch (error) {
       console.error("Failed to update favorite status", error);
     }
@@ -114,7 +118,7 @@ function NoteHeader({
           className="size-6 cursor-pointer text-red-900"
           onClick={(e) => {
             e.stopPropagation();
-            toggleFavorite(note._id);
+            handleFavoriteToggle(e);
           }}
         >
           <path
@@ -154,14 +158,9 @@ function NoteDescription({ description }: { description: string }) {
   );
 }
 
-interface CodeBlockProps {
-  language: string;
-  code: string;
-}
-
 const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   return (
-    <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4">
+    <div className="rounded-[15px] overflow-hidden text-sm mx-4 mt-4 overflow-y-auto max-h-[500px]">
       <SyntaxHighlighter language={language} style={vs}>
         {code}
       </SyntaxHighlighter>
@@ -169,19 +168,43 @@ const Code: React.FC<CodeBlockProps> = ({ language, code }) => {
   );
 };
 
-function NoteFooter({ language }: { language: string }) {
+function NoteFooter({
+  language,
+  creatorId,
+  _id,
+}: {
+  language: string;
+  creatorId: string;
+  _id: string;
+}) {
+  const { user } = useUser();
+  const userId = user?.id;
+
+  const handleDelete = async () => {
+    if (!userId) return;
+    try {
+      await fetch(`/api/notes/${_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Failed to delete note", error);
+    }
+  };
+
   return (
     <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
       <div className="flex gap-1 items-center">
-        <JavascriptIcon
-          fontSize={"medium"}
-          className="mb-[2px]"
-        ></JavascriptIcon>
+        <JavascriptIcon fontSize={"medium"} className="mb-[2px]" />
         <span>{language}</span>
       </div>
-      <DeleteIcon fontSize={"medium"} className="cursor-pointer"></DeleteIcon>
+      {userId === creatorId && (
+        <Button onClick={handleDelete}>
+          <DeleteIcon fontSize={"medium"} className="cursor-pointer" />
+        </Button>
+      )}
     </div>
   );
 }
-
-export default SingleNote;
