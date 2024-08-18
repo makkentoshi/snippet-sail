@@ -43,8 +43,8 @@ const ContentNote = () => {
   const [singleNote, setSingleNote] = useState<SingleNoteType | null>(null);
 
   const { user } = useUser();
-  const userId = user?.id ?? "unknown";
-  const creatorId = userId;
+  const creatorId = user?.id ?? "unknown";
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -55,9 +55,9 @@ const ContentNote = () => {
 
   useEffect(() => {
     if (!openContentNote) return;
-    console.log("creatorId:", creatorId);
+
     if (isNewNote) {
-      const newNote = {
+      const newNote: SingleNoteType = {
         _id: uuidv4(),
         title: "",
         tags: [],
@@ -66,25 +66,20 @@ const ContentNote = () => {
         code: "",
         language: "",
         creationDate: new Date().toISOString(),
-        creatorId: creatorId ?? userId,
+        creatorId,
       };
-
       setSingleNote(newNote);
       setSelectedTags([]);
     } else if (selectedNote) {
-      const noteToEdit = { ...selectedNote };
-      noteToEdit.creatorId = selectedNote.creatorId || creatorId;
+      const noteToEdit = { ...selectedNote, creatorId: selectedNote.creatorId || creatorId };
       setSingleNote(noteToEdit);
-
       setSelectedTags(
-        selectedNote.tags?.map((tag) => ({ name: tag, _id: uuidv4() })) || []
+        selectedNote.tags?.map(tag => ({ name: tag, _id: uuidv4() })) || []
       );
     }
-  }, [openContentNote, isNewNote, selectedNote, setSelectedTags]);
+  }, [openContentNote, isNewNote, selectedNote, creatorId, setSelectedTags]);
 
-  useEffect(() => {
-    console.log("User ID:", userId);
-  }, [userId]);
+
 
   useEffect(() => {
     if (singleNote && !isNewNote) {
@@ -97,39 +92,22 @@ const ContentNote = () => {
 
   const handleSaveNewNote = useCallback(() => {
     if (isNewNote && singleNote?.title) {
-      setAllNotes((prevNotes) => [...prevNotes, singleNote]);
+      setAllNotes(prevNotes => [...prevNotes, singleNote]);
       setIsNewNote(false);
       setOpenContentNote(false);
     }
   }, [isNewNote, singleNote, setAllNotes, setIsNewNote, setOpenContentNote]);
 
-  const handleTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setSingleNote((prevNote) =>
-        prevNote ? { ...prevNote, title: e.target.value } : null
-      );
-    },
-    []
-  );
 
-  const handleTagToggle = useCallback(
-    (tag: SingleTagType) => {
-      const newTags = selectedTags.some((t) => t.name === tag.name)
-        ? selectedTags.filter((t) => t.name !== tag.name)
-        : [...selectedTags, tag];
+  const handleTagToggle = useCallback((tag: SingleTagType) => {
+    const newTags = selectedTags.some(t => t.name === tag.name)
+      ? selectedTags.filter(t => t.name !== tag.name)
+      : [...selectedTags, tag];
 
-      setSelectedTags(newTags);
-      setSingleNote((prevNote) =>
-        prevNote ? { ...prevNote, tags: newTags.map((t) => t.name) } : null
-      );
-    },
-    [selectedTags, setSelectedTags]
-  );
+    setSelectedTags(newTags);
+    setSingleNote(prevNote => prevNote ? { ...prevNote, tags: newTags.map(t => t.name) } : null);
+  }, [selectedTags, setSelectedTags]);
 
-  const handleClose = useCallback(() => {
-    handleSaveNewNote();
-    setOpenContentNote(false);
-  }, [handleSaveNewNote, setOpenContentNote]);
 
   return (
     <div
@@ -269,25 +247,6 @@ function ContentNoteHeader({
     setAllNotes(newAllNotes);
   }
   const { toast } = useToast();
-  // const handlePostNote = useCallback(() => {
-  //   if (singleNote && singleNote.title.trim() !== "") {
-  //     const newNote = { ...singleNote };
-
-  //     setAllNotes((prevNotes) => [...prevNotes, newNote]);
-  //     setSingleNote(null);
-  //     setIsNewNote(false);
-  //     setOpenContentNote(false);
-  //   } else {
-  //     alert("You can't create a snippet without a title");
-  //   }
-  // }, [
-  //   singleNote,
-  //   setAllNotes,
-  //   setSingleNote,
-  //   setIsNewNote,
-  //   setOpenContentNote,
-  // ]);
-
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -376,11 +335,11 @@ function NoteTags({
       const newAllNotes = allNotes.map((note) =>
         note._id === singleNote._id ? newSingleNote : note
       );
-
+  
       setAllNotes(newAllNotes);
       setSingleNote(newSingleNote);
     }
-  }, [selectedTags]);
+  }, [selectedTags, allNotes, singleNote, setAllNotes, setSingleNote]);
 
   return (
     <div className="flex text-[13px] items-center gap-2">
@@ -662,7 +621,7 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
             Confirm
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-[15px]">
           <AlertDialogHeader>
             <AlertDialogTitle>
               Are you sure you want to create the post?

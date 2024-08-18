@@ -244,7 +244,7 @@ function NoteFooter({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="rounded-[8px]">
+              <AlertDialogCancel className="rounded-[6px]">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction onClick={handleDelete} className="">
