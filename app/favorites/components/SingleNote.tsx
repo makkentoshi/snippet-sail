@@ -208,3 +208,4 @@ function NoteFooter({
     </div>
   );
 }
+export default SingleNote;
