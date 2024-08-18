@@ -88,7 +88,7 @@ export async function POST(req: Request) {
       await connect();
       console.log("MongoDB is connected...");
 
-      console.log("Looking for user...");
+  
       let user = await User.findOne({ clerkUserId: user_id });
 
       const emailAddress = await getUserEmail(user_id);

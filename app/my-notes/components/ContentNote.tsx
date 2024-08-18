@@ -45,7 +45,6 @@ const ContentNote = () => {
   const { user } = useUser();
   const creatorId = user?.id ?? "unknown";
 
-
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     handleResize();
@@ -55,9 +54,8 @@ const ContentNote = () => {
 
   useEffect(() => {
     if (!openContentNote) return;
-
     if (isNewNote) {
-      const newNote: SingleNoteType = {
+      const newNote = {
         _id: uuidv4(),
         title: "",
         tags: [],
@@ -66,18 +64,21 @@ const ContentNote = () => {
         code: "",
         language: "",
         creationDate: new Date().toISOString(),
-        creatorId,
+        creatorId: creatorId,
       };
+
       setSingleNote(newNote);
       setSelectedTags([]);
     } else if (selectedNote) {
-      const noteToEdit = { ...selectedNote, creatorId: selectedNote.creatorId || creatorId };
+      const noteToEdit = { ...selectedNote };
+      noteToEdit.creatorId = selectedNote.creatorId || creatorId;
       setSingleNote(noteToEdit);
+
       setSelectedTags(
-        selectedNote.tags?.map(tag => ({ name: tag, _id: uuidv4() })) || []
+        selectedNote.tags?.map((tag) => ({ name: tag, _id: uuidv4() })) || []
       );
     }
-  }, [openContentNote, isNewNote, selectedNote, creatorId, setSelectedTags]);
+  }, [openContentNote, isNewNote, selectedNote, setSelectedTags]);
 
 
 
@@ -92,21 +93,27 @@ const ContentNote = () => {
 
   const handleSaveNewNote = useCallback(() => {
     if (isNewNote && singleNote?.title) {
-      setAllNotes(prevNotes => [...prevNotes, singleNote]);
+      setAllNotes((prevNotes) => [...prevNotes, singleNote]);
       setIsNewNote(false);
       setOpenContentNote(false);
     }
   }, [isNewNote, singleNote, setAllNotes, setIsNewNote, setOpenContentNote]);
 
 
-  const handleTagToggle = useCallback((tag: SingleTagType) => {
-    const newTags = selectedTags.some(t => t.name === tag.name)
-      ? selectedTags.filter(t => t.name !== tag.name)
-      : [...selectedTags, tag];
 
-    setSelectedTags(newTags);
-    setSingleNote(prevNote => prevNote ? { ...prevNote, tags: newTags.map(t => t.name) } : null);
-  }, [selectedTags, setSelectedTags]);
+  const handleTagToggle = useCallback(
+    (tag: SingleTagType) => {
+      const newTags = selectedTags.some((t) => t.name === tag.name)
+        ? selectedTags.filter((t) => t.name !== tag.name)
+        : [...selectedTags, tag];
+
+      setSelectedTags(newTags);
+      setSingleNote((prevNote) =>
+        prevNote ? { ...prevNote, tags: newTags.map((t) => t.name) } : null
+      );
+    },
+    [selectedTags, setSelectedTags]
+  );
 
 
   return (
@@ -247,6 +254,8 @@ function ContentNoteHeader({
     setAllNotes(newAllNotes);
   }
   const { toast } = useToast();
+
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -335,11 +344,11 @@ function NoteTags({
       const newAllNotes = allNotes.map((note) =>
         note._id === singleNote._id ? newSingleNote : note
       );
-  
+
       setAllNotes(newAllNotes);
       setSingleNote(newSingleNote);
     }
-  }, [selectedTags, allNotes, singleNote, setAllNotes, setSingleNote]);
+  }, [selectedTags]);
 
   return (
     <div className="flex text-[13px] items-center gap-2">
