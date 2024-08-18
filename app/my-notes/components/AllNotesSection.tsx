@@ -63,6 +63,38 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     creatorId,
   } = note;
 
+  return (
+    <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md">
+      <NoteHeader
+        title={title ?? "Untitled"}
+        isFavorite={isFavorite ?? false}
+        note={note}
+        _id={_id}
+      />
+      <NoteDate creationDate={creationDate ?? "Unknown date"} />
+      <NoteTags tags={tags ?? []} />
+      <NoteDescription description={description ?? "No description"} />
+      <Code language={language ?? "Not Selected"} code={code ?? ""} />
+      <NoteFooter
+        language={language ?? "Not Selected"}
+        creatorId={creatorId}
+        _id={_id}
+      />
+    </div>
+  );
+}
+
+function NoteHeader({
+  title,
+  isFavorite,
+  note,
+  _id,
+}: {
+  title: string;
+  isFavorite: boolean;
+  note: SingleNoteType;
+  _id: string;
+}) {
   const {
     openContentNoteObject: { setOpenContentNote },
     selectedNoteObject: { setSelectedNote },
@@ -91,50 +123,19 @@ function SingleNote({ note }: { note: SingleNoteType }) {
     }
   };
 
-  return (
-    <SingleNoteDialog
-      note={note}
-      setSelectedNote={setSelectedNote}
-      setOpenContentNote={setOpenContentNote}
-    >
-      <div className="max-sm:w-full rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer">
-        <NoteHeader
-          title={title ?? "Untitled"}
-          isFavorite={isFavorite ?? false}
-          note={note}
-          _id={_id}
-          handleFavoriteToggle={handleFavoriteToggle}
-        />
-        <NoteDate creationDate={creationDate ?? "Unknown date"} />
-        <NoteTags tags={tags ?? []} />
-        <NoteDescription description={description ?? "No description"} />
-        <Code language={language ?? "Not Selected"} code={code ?? ""} />
-        <NoteFooter
-          language={language ?? "Not Selected"}
-          creatorId={creatorId}
-          _id={_id}
-        />
-      </div>
-    </SingleNoteDialog>
-  );
-}
+  const handleClick = () => {
+    setSelectedNote(note);
+    setOpenContentNote(true);
+  };
 
-function NoteHeader({
-  title,
-  isFavorite,
-  note,
-  _id,
-  handleFavoriteToggle,
-}: {
-  title: string;
-  isFavorite: boolean;
-  note: SingleNoteType;
-  _id: string;
-  handleFavoriteToggle: (e: React.MouseEvent) => void;
-}) {
   return (
     <div className="flex justify-between mx-4">
-      <span className="font-bold text-lg w-[87%]">{title}</span>
+      <span
+        className="font-bold text-lg w-[87%] cursor-pointer hover:text-blue-900"
+        onClick={handleClick}
+      >
+        {title}
+      </span>
       <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -143,7 +144,10 @@ function NoteHeader({
           strokeWidth={1.5}
           stroke="currentColor"
           className="size-6 cursor-pointer text-red-800"
-          onClick={handleFavoriteToggle}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleFavoriteToggle(e);
+          }}
         >
           <path
             strokeLinecap="round"
@@ -166,7 +170,7 @@ function NoteDate({ creationDate }: { creationDate: string }) {
 
 function NoteTags({ tags }: { tags: string[] }) {
   return (
-    <div className="text-white text-[11px] mx-4 flex-wrap flex gap-1 mt-4  ">
+    <div className=" text-white text-[11px] mx-4 flex-wrap flex gap-1 mt-4  ">
       {tags.map((tag, index) => (
         <span key={index} className="bg-[#31267a]  p-1 rounded-[7px] px-2">
           {tag}
@@ -267,12 +271,10 @@ function SingleNoteDialog({
   note,
   setSelectedNote,
   setOpenContentNote,
-  children,
 }: {
   note: SingleNoteType;
   setSelectedNote: (note: SingleNoteType) => void;
   setOpenContentNote: (open: boolean) => void;
-  children: React.ReactNode;
 }) {
   const { user } = useUser();
 
@@ -280,45 +282,59 @@ function SingleNoteDialog({
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (isDialogOpen) {
-      setSelectedNote(note);
-      setOpenContentNote(true);
-    } else {
-      setOpenContentNote(false);
-    }
-  }, [isDialogOpen, note, setOpenContentNote, setSelectedNote]);
-
   const handleEditClick = () => {
     setDialogOpen(false);
+    setTimeout(() => {
+      router.push(`/notes/${note._id}`);
+    }, 300);
   };
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(note.code);
-    setDialogOpen(false);
+  const handleClick = () => {
+    setSelectedNote(note);
+    setOpenContentNote(true);
+  };
+
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(note.code || "");
+    alert("Code copied to clipboard!");
   };
 
   return (
-    <AlertDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-      <AlertDialogTrigger asChild>
-        <div className="flex inset-0 justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
-          <span className="font-bold text-lg w-[87%]">{note.title}</span>
-        </div>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="bg-white">
-        <AlertDialogHeader>
-          <AlertDialogTitle>{note.title}</AlertDialogTitle>
-          <AlertDialogDescription>{note.description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          {userId === note.creatorId && (
-            <AlertDialogAction onClick={handleEditClick}>
-              Edit
+    <>
+      <AlertDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <div
+            className="rounded-xl flex flex-col justify-between w-[625px] py-4 bg-white shadow-md cursor-pointer"
+            onClick={() => setDialogOpen(true)}
+          >
+            {/* Тут ваш контент для SingleNote */}
+            <div className="font-bold text-lg mx-4">{note.title}</div>
+            {/* Другие элементы SingleNote */}
+          </div>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="max-w-xl mx-auto">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{note.title}</AlertDialogTitle>
+            <AlertDialogDescription>{note.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="mt-4 p-4 bg-gray-100 rounded-md">
+            <pre className="whitespace-pre-wrap">
+              <code>{note.code}</code>
+            </pre>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            {userId === note.creatorId && (
+              <AlertDialogAction onClick={handleEditClick}>
+                Edit
+              </AlertDialogAction>
+            )}
+            <AlertDialogAction onClick={handleCopyClick}>
+              Copy
             </AlertDialogAction>
-          )}
-          <AlertDialogAction onClick={handleCopy}>Copy</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
