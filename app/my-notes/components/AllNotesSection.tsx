@@ -140,7 +140,7 @@ function NoteHeader({
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="size-6 cursor-pointer text-red-900"
+          className="size-6 cursor-pointer text-red-800"
           onClick={(e) => {
             e.stopPropagation();
             handleFavoriteToggle(e);
@@ -226,8 +226,11 @@ function NoteFooter({
         <span>{language}</span>
       </div>
       {userId === creatorId && (
-        <Button onClick={handleDelete}>
-          <DeleteIcon fontSize={"medium"} className="cursor-pointer" />
+        <Button
+          onClick={handleDelete}
+          className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all"
+        >
+          <DeleteIcon fontSize={"medium"} className=" " />
         </Button>
       )}
     </div>
