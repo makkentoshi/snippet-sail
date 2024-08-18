@@ -44,7 +44,7 @@ const ContentNote = () => {
 
   useEffect(() => {
     if (!openContentNote) return;
-
+    console.log("creatorId:", creatorId);
     if (isNewNote) {
       const newNote = {
         _id: uuidv4(),
@@ -55,7 +55,7 @@ const ContentNote = () => {
         code: "",
         language: "",
         creationDate: new Date().toISOString(),
-        creatorId: creatorId,
+        creatorId: creatorId ?? userId,
       };
 
       setSingleNote(newNote);
@@ -589,7 +589,7 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
 
   const handleConfirm = useCallback(async () => {
     if (singleNote && singleNote.title.trim() !== "") {
-      console.log(singleNote);
+      console.log(singleNote.creatorId);
       try {
         const response = await fetch("/api/notes", {
           method: "POST",
