@@ -1,11 +1,8 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Sider from "antd/es/layout/Sider";
-import { Button } from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import Logo from "./Logo";
+import { useState, useEffect } from "react";
 import MenuList from "./MenuList";
-
+import AllNotesSection from "./AllNotesSection";
+import Sider from "antd/es/layout/Sider";
+import Logo from "./Logo";
 
 const Sidebar = ({
   collapsed,
@@ -14,6 +11,8 @@ const Sidebar = ({
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -35,7 +34,7 @@ const Sidebar = ({
       <Logo collapsed={collapsed} />
 
       <Sider collapsed={collapsed} collapsible trigger={null}>
-        <MenuList />
+        <MenuList setSelectedLanguage={setSelectedLanguage} />
       </Sider>
     </div>
   );

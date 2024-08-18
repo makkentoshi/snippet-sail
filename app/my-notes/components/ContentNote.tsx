@@ -630,7 +630,7 @@ const ConfirmNote: React.FC<ConfirmNoteProps> = ({
             Confirm
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="rounded-[15px]">
+        <AlertDialogContent className="rounded-[15px] bg-white">
           <AlertDialogHeader>
             <AlertDialogTitle>
               Are you sure you want to create the post?
