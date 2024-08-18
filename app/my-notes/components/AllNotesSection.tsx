@@ -10,7 +10,7 @@ import { vs } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import { Button } from "@/components/ui/button";
 import { fetchNotes } from "@/app/lib/api";
 import { useNotes } from "@/app/lib/hooks/useNotes";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
