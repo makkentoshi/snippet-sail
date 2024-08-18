@@ -228,6 +228,7 @@ function NoteFooter({
       setIsOpen(false);
 
       router.refresh();
+      router.push("/my-notes");
     } catch (error) {
       console.error("Failed to delete note", error);
     }
@@ -235,14 +236,14 @@ function NoteFooter({
 
   return (
     <>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
-          <div className="flex gap-1 items-center">
-            <JavascriptIcon fontSize={"medium"} className="mb-[2px]" />
-            <span>{language}</span>
-          </div>
-          {userId === creatorId && (
-            <>
+      <div className="flex inset-0 justify-between text-[13px] text-slate-400 mx-4 mt-3 ">
+        <div className="flex gap-1 items-center">
+          <JavascriptIcon fontSize={"large"} className="" />
+          <span>{language}</span>
+        </div>
+        {userId === creatorId && (
+          <>
+            <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
               <AlertDialogTrigger asChild>
                 <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
                   <DeleteIcon fontSize={"medium"} className=" " />
@@ -264,10 +265,10 @@ function NoteFooter({
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
-            </>
-          )}
-        </div>
-      </AlertDialog>
+            </AlertDialog>
+          </>
+        )}
+      </div>
     </>
   );
 }
