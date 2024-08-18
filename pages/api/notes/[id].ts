@@ -17,6 +17,12 @@ export default async function handler(
       return res.status(404).json({ message: "Note not found" });
     }
 
+    // Логирование для отладки
+    console.log("Received PUT request:", req.body);
+    console.log("Note creatorId:", note.creatorId);
+    console.log("Current userId:", userId);
+
+    // Проверяем, изменяется ли только поле isFavorite
     const isFavoriteOnlyUpdate = Object.keys(req.body).every(
       (key) => key === "isFavorite"
     );
@@ -28,6 +34,7 @@ export default async function handler(
       return res.status(200).json(updatedNote);
     }
 
+    // Проверка прав на редактирование
     if (note.creatorId !== userId) {
       return res.status(403).json({ message: "Not authorized" });
     }
