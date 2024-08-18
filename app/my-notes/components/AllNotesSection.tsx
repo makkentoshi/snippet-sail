@@ -226,7 +226,8 @@ function NoteFooter({
         },
       });
       setIsOpen(false);
-      router.push("/my-notes");
+
+      router.replace(router.asPath);
     } catch (error) {
       console.error("Failed to delete note", error);
     }
