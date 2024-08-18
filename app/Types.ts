@@ -1,4 +1,5 @@
 export interface SingleNoteType {
+  creatorId: string;
   _id: string;
   code: string;
   title: string;
@@ -7,7 +8,6 @@ export interface SingleNoteType {
   description?: string;
   language?: string;
   creationDate?: string;
-  creatorId: string;
 }
 
 export interface SingleTagType {
