@@ -244,10 +244,7 @@ function NoteFooter({
           {userId === creatorId && (
             <>
               <AlertDialogTrigger asChild>
-                <Button
-                  onClick={handleDelete}
-                  className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all"
-                >
+                <Button className="z-50 cursor-pointer hover:bg-gray-100 p-2 border rounded-full transition-all">
                   <DeleteIcon fontSize={"medium"} className=" " />
                 </Button>
               </AlertDialogTrigger>
